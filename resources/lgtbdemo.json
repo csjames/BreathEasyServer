@@ -1,0 +1,142 @@
+{
+  "content": [
+    {
+      "content": {
+        "items": [
+          {
+            "content": {
+              "questions": [
+                {
+                  "footerText": "With some footer text",
+                  "question_id": "Q1",
+                  "text": "Free text question",
+                  "title": "Question 1",
+                  "type": "free-text"
+                },
+                {
+                  "choices": [
+                    {
+                      "choice": "Choice 1",
+                      "detail": "This is a choice"
+                    },
+                    {
+                      "choice": "Choice 2",
+                      "detail": "This is a choice"
+                    }
+                  ],
+                  "question_id": "Q2",
+                  "text": "Multiple choice question",
+                  "title": "Question 2",
+                  "type": "multiple-choice"
+                }
+              ]
+            },
+            "id": "A Survey",
+            "label": "A Survey",
+            "type": "survey"
+          },
+          {
+            "content": {
+              "text": "<p>This is an info page</p>\n",
+              "title": "A Title",
+              "type": 1
+            },
+            "id": "An Info Page",
+            "label": "An Info Page",
+            "type": "info"
+          },
+          {
+            "content": {
+              "labels": []
+            },
+            "id": "A Diary",
+            "label": "A Diary",
+            "type": "diary"
+          },
+          {
+            "content": {
+              "headerText": "Write down your plans",
+              "title": "This is a text plan",
+              "type": null
+            },
+            "id": "A Planner",
+            "label": "A Planner",
+            "type": "planner"
+          },
+          {
+            "content": {
+              "editPlanner": "A Planner",
+              "feedback": {
+                "text": "<p>This is the feedback page for the reviewer</p>\n",
+                "title": "Feedback",
+                "type": 1
+              },
+              "headerText": "This is a reviewer for the planner with check boxes",
+              "title": "A Reviewer",
+              "type": 0
+            },
+            "id": "A Reviewer",
+            "label": "A Reviewer",
+            "type": "planner_review"
+          },
+          {
+            "content": {
+              "items": [
+                {
+                  "content": {
+                    "text": "<p>Page 1</p>\n\n<p>This page only gets shown the first time.</p>\n",
+                    "title": "Page 1",
+                    "type": 1
+                  },
+                  "id": "Page 1",
+                  "label": "Page 1",
+                  "navCondition": {
+                    "op": "!=",
+                    "varA": {
+                      "variable": "Pg1Chk"
+                    },
+                    "varB": 1
+                  },
+                  "postActivity": {
+                    "function": "set"
+                  },
+                  "type": "info"
+                },
+                {
+                  "content": {
+                    "text": "<p>Page 2 - also lets show the value for the variable we used on the previous page&Acirc;&#160;$Pg1Chk</p>\n",
+                    "title": "Page 2",
+                    "type": 1
+                  },
+                  "id": "Page 2",
+                  "label": "Page 2",
+                  "type": "info"
+                },
+                {
+                  "content": {
+                    "text": "<p>Page 3</p>\n",
+                    "title": "Page 3",
+                    "type": 1
+                  },
+                  "id": "Page 3",
+                  "label": "Page 3",
+                  "type": "info"
+                }
+              ]
+            },
+            "id": "A Sequence",
+            "label": "A Sequence",
+            "type": "sequence"
+          }
+        ]
+      },
+      "label": "Main Menu",
+      "type": "menu",
+	  "id": "Main Menu"
+    }
+  ],
+  "functionPool": {},
+  "modelVersion": 2,
+  "triggers": [],
+  "front": "Main Menu"
+}

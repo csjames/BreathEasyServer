@@ -21,12 +21,18 @@ var bodyParser  = require('body-parser'); // A body parser for node.js
 var morgan      = require('morgan'); // Morgan is an HTTP request logger for node.js
 var mongoose    = require('mongoose');
 var passport    = require('passport');
-
 //var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var jwt     = require('jwt-simple');
 //var config = require('./config'); // get our config file
 var config = require('./config/database');
 var User   = require('./app/models/user'); // get our mongoose model
+var fs = require('fs');
+
+// Load local JSON intervention for testing purposes ***** NOT using authentication services
+var jsonModel = JSON.parse(fs.readFileSync('resources/lgtbdemo.json', 'utf8'));
+var sample1Model = JSON.parse(fs.readFileSync('resources/sample1.json', 'utf8'));
+var sample2Model = JSON.parse(fs.readFileSync('resources/sample2.json', 'utf8'));
+var sample3Model = JSON.parse(fs.readFileSync('resources/sample3.json', 'utf8'));
 
 // =======================
 // configuration =========
@@ -39,7 +45,6 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('Successfully conected to the MongoDB database');
-  // we're connected!
 });
 
 app.set('superSecret', config.secret); // Secret variable
@@ -48,8 +53,8 @@ app.set('superSecret', config.secret); // Secret variable
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// use morgan to log requests to the console
-app.use(morgan('dev'));
+// Use morgan to log requests to the console
+app.use(morgan('dev')); // You can also use 'combined', 'common', 'short', 'tiny'
 
 // Initialise the passport package
 app.use(passport.initialize());
@@ -66,6 +71,25 @@ app.get('/', function(req, res) {
     res.send('Hello! The API is at http://localhost:' + port + '/api');
 });
 
+// Basic route used for testing only
+app.get('/resources/Jmodel', function (req, res) {
+    res.jsonp(jsonModel);
+});
+
+// Basic route used for testing only
+app.get('/resources/sample1Model', function (req, res) {
+    res.jsonp(sample1Model);
+});
+
+// Basic route used for testing only
+app.get('/resources/sample2Model', function (req, res) {
+    res.jsonp(sample2Model);
+});
+
+// Basic route used for testing only
+app.get('/resources/sample3Model', function (req, res) {
+    res.jsonp(sample3Model);
+});
 
 // Set up a JWT RESTfull (Representational State Transfer) API strategy for user authentication
 // API ROUTES -------------------

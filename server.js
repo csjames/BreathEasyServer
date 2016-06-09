@@ -26,6 +26,7 @@ var jwt     = require('jwt-simple');
 //var config = require('./config'); // get our config file
 var config = require('./config/database');
 var User   = require('./app/models/user'); // get our mongoose model
+var DataObj  = require('./app/models/testUploadedData'); // get our mongoose model
 var fs = require('fs');
 
 // Load local JSON intervention for testing purposes ***** NOT using authentication services
@@ -90,6 +91,7 @@ app.get('/resources/sample2Model', function (req, res) {
 app.get('/resources/sample3Model', function (req, res) {
     res.jsonp(sample3Model);
 });
+
 
 // Set up a JWT RESTfull (Representational State Transfer) API strategy for user authentication
 // API ROUTES -------------------
@@ -163,11 +165,49 @@ apiRoutes.post('/signup', function(req, res) {
     newUser.save(function(err) {
       if (err) {
         return res.json({success: false, msg: 'Username already exists.'});
-      }
+      } 
       res.json({success: true, msg: 'Successful created new user.'});
     });
   }
 });
+
+//----------------------------------------Start of Roushdat's testing codes-------------------------------
+// Route to store uploaded data (POST http://localhost:8080/api/testupload)
+apiRoutes.post('/testupload', function(req, res) {
+  if (!req.body.key || !req.body.value) {
+    res.json({success: false, msg: 'Please pass key and value.'});
+    console.log('no data for key and value passed');
+  } else {
+        console.log('obtained key and value from client '+req.body.key+": "+req.body.value);
+        //create data obj
+            var newDataObj = new DataObj({
+            key: req.body.key,
+            value: req.body.value
+        });
+        // save the data obj
+        newDataObj.save(function (err){
+          if(err){
+              return res.json({success: false, msg: 'could not save data obj'});
+          }
+          else{
+               console.log('saved key and value to database '+newDataObj.key+": "+newDataObj.value);
+          }
+      });
+    }
+});
+
+
+// route to return all data objects matching a parameter passed in the url (GET http://localhost:8080/api/dataobjs/parametername)
+apiRoutes.get('/dataobjs/:key', function(req, res) {
+    console.log('request wants '+JSON.stringify(req.params['key']));
+    var searchterm=req.params['key'];
+    DataObj.find({'key':searchterm}, function(err, dataobjs) {
+    res.json(dataobjs);
+  });
+});
+
+//----------------------------------------end of Roushdat's testing codes-------------------------------
+
 
 // Protected route using JWT to a restricted info (GET http://localhost:8080/api/memberinfo)
 apiRoutes.get('/memberinfo', passport.authenticate('jwt', { session: false}), function(req, res) {

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LifeGuide Toolbox Admin Page</title>
+
+    <link rel="icon" type="image/png" href="/img/icon.png" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#login">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h2>LifeGuide Toolbox Management Page</h2>
+        </div>
+
+        <div class="jumbotron">
+            <div class="container">
+                <div id="loginbox" style="margin-top:10px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <form name="login" action="api/authenticate" method="post" accept-charset="utf-8">
+                        <h2>Please enter your login information</h2>
+
+                        <div class="form-group">
+                            <label for="usermail" class="col-md-3 control-label">Username</label>
+                            <input type="text" name="username" placeholder="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-md-3 control-label">Password</label>
+                            <input type="password" name="password" placeholder="password" required>
+                        </div>
+
+                        <button type="submit" onclick="login()" class="btn btn-primary btn-large">Login</button>
+                        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+
+                    </form>
+                    <form name="forgotenpassword" action="api/users" method="get" accept-charset="utf-8">
+                        <button type="submit" class="btn btn-primary btn-large">Forgoten Password</button>
+                    </form>
+                    <form name="register" action="api/signup" method="post" accept-charset="utf-8">
+                        <button type="submit" class="btn btn-primary btn-large">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function validateForm() {
+            var x = document.forms["login"]["username"].value;
+            if (x == null || x == "") {
+                alert("Please fill out the username");
+                return false;
+            }
+        }
+
+        function login(user) {
+            return $q(function (resolve, reject) {
+                $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
+                    if (result.data.success) {
+                        storeUserCredentials(result.data.token);
+                        resolve(result.data.msg);
+                    } else {
+                        reject(result.data.msg);
+                    }
+                });
+            });
+        }
+
+        function tokenManagement() {
+            var token = window.localStorage.getItem('token');
+            if (token) {
+                options.headers = {
+                    'x-access-token': token
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

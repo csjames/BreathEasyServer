@@ -26,6 +26,7 @@ var jwt = require('jwt-simple');
 //var config = require('./config'); // get our config file
 var config = require('./config/database');
 var User = require('./app/models/user'); // get our mongoose model
+var DataEntry = require('./app/models/data');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
@@ -45,6 +46,8 @@ var sample7Model = JSON.parse(fs.readFileSync('resources/sample7.json', 'utf8'))
 var sample8Model = JSON.parse(fs.readFileSync('resources/sample8.json', 'utf8'));
 var sample9Model = JSON.parse(fs.readFileSync('resources/sample9.json', 'utf8'));
 var sample10Model = JSON.parse(fs.readFileSync('resources/sample10.json', 'utf8'));
+var sample11Model = JSON.parse(fs.readFileSync('resources/sample11.json', 'utf8'));
+var sample12Model = JSON.parse(fs.readFileSync('resources/sample12.json', 'utf8'));
 
 
 // =======================
@@ -152,6 +155,14 @@ app.get('/resources/sample10Model', function (req, res) {
     res.jsonp(sample10Model);
 });
 
+app.get('/resources/sample11Model', function (req, res) {
+    res.jsonp(sample11Model);
+});
+
+app.get('/resources/sample12Model', function (req, res) {
+    res.jsonp(sample12Model);
+});
+
 // Set up a JWT RESTfull (Representational State Transfer) API strategy for user authentication
 // API ROUTES -------------------
 // get an instance of the router for api routes
@@ -210,6 +221,36 @@ apiRoutes.post('/authenticate', function (req, res) {
         }
     });
 });
+
+
+// Route to store user feedback informations (POST http://localhost:8080/api/store)
+apiRoutes.post('/store', function (req, res) {
+    if (!req.body.key || !req.body.data) {
+        res.json({
+            success: false,
+            msg: 'Please pass some information.'
+        });
+    } else {
+        var newDataEntry = new DataEntry({
+            key: req.body.key,
+            data: req.body.data
+        });
+        // save the user
+        newDataEntry.save(function (err) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    msg: 'Data entry already exists.'
+                });
+            }
+            res.json({
+                success: true,
+                msg: 'Successful stored new data entry.'
+            });
+        });
+    }
+});
+
 
 // Route to create a new user account (POST http://localhost:8080/api/signup)
 apiRoutes.post('/signup', function (req, res) {

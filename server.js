@@ -341,6 +341,13 @@ apiRoutes.get('/users', function (req, res) {
     });
 });
 
+// route to return all stored date (GET http://localhost:8080/api/storedData)
+apiRoutes.get('/storedData', function (req, res) {
+    DataEntry.find({}, function (err, data) {
+        res.json(data);
+    });
+});
+
 // Apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
 

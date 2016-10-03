@@ -261,6 +261,8 @@ apiRoutes.post('/signup', function (req, res) {
         });
     } else {
         var newUser = new User({
+            name: req.body.name,
+            surname: req.body.surname,
             username: req.body.username,
             password: req.body.password
         });

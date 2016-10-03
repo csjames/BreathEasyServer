@@ -33,6 +33,7 @@ var UserSchema = new Schema({
     admin: Boolean,
     interventionID: String,
     email: String,
+    tel: Number,
     location: String,
     meta: {
         age: Number,

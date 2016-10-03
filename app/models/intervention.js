@@ -18,7 +18,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 
-var DataSchema = new Schema({
+var InterventionSchema = new Schema({
     key: {
         type: String,
         required: true,
@@ -31,4 +31,4 @@ var DataSchema = new Schema({
 // Create a model using a schema, models are used to create instances of data that will be stored in documents
 // Mongoose also creates a MongoDB collection called 'User' for these documents
 // set up a mongoose model and pass it to our node applications using module.exports
-module.exports = mongoose.model('DataEntry', DataSchema);
+module.exports = mongoose.model('Intervention', InterventionSchema);

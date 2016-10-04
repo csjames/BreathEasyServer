@@ -202,7 +202,6 @@ apiRoutes.post('/authenticate', function (req, res) {
                         expires: expires,
                         user: user.toJSON()
                     });
-                    //*/
 
                     // return the information including token as JSON
                     //*

@@ -8,152 +8,155 @@
 
     <link rel="icon" type="image/png" href="/img/icon.png" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+    <style>
+        .vertical-center {
+            min-height: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: top;
+        }
+    </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">LifeGuide Toolbox <span class="glyphicon glyphicon-copyright-mark"></span></a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                <li><a href="#about"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="container">
-        <div class="jumbotron text-center">
-            <h2>LifeGuide Toolbox Management Page</h2>
-        </div>
-
-        <div class="jumbotron">
-
-            <div class="container">
-                <div id="loginbox" style="margin-top:10px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-                    <form name="login" action="api/authenticate" method="post" accept-charset="utf-8">
-                        <h2>Please enter your login information</h2>
-
-                        <div class="form-group">
-                            <label for="username" class="col-md-3 control-label">Username</label>
-                            <input type="text" maxlength="40" name="username" placeholder="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="col-md-3 control-label">Password</label>
-                            <input type="password" maxlength="40" name="password" placeholder="password" required>
-                        </div>
-
-
-                        <button type="submit" onclick="login()" class="btn btn-default btn-block">Login</button>
-                        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
-
-                    </form>
-                    <div class="btn-group btn-group-justified">
-
-                    </div>
-                    <form name="forgotenpassword" action="api/users" method="get" accept-charset="utf-8">
-                        <button type="submit" class="btn btn-default btn-block">Forgoten Password</button>
-                    </form>
-                    <form name="register" action="api/signup" method="post" accept-charset="utf-8">
-                        <button type="submit" class="btn btn-default btn-block">Register</button>
-                    </form>
-
+        <nav class="navbar-fixed-top navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#home">LifeGuide Toolbox <span class="glyphicon glyphicon-copyright-mark"></span></a>
                 </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="#home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li><a href="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="#about"><span class="glyphicon glyphicon-question-sign"></span> About</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
             </div>
-
+        </nav>
+    </div>
+    <div id="home" class="container vertical-center">
+        <div class="jumbotron text-left">
+            <h2>LifeGuide Toolbox Management Page</h2>
+            <p class="text-justify">
+                The Lifeguide Toolbox admin tools website should be used by interventions authors to publish their interventions.
+            </p>
+            <p>
+                Please click <a href="#login">here</a> to go to the login page, if you don't have an account with us please click <a href="#register">here</a> to create an account.
+            </p>
 
         </div>
-
     </div>
 
-    <script>
-        (function () {
+    <div id="login" class="container vertical-center">
+        <div class="jumbotron">
+            <div id="loginbox">
+                <form name="login" action="api/authenticate" method="post" accept-charset="utf-8">
+                    <h2>Please enter your login information</h2>
 
-            var LOCAL_TOKEN_KEY = 'yourTokenKey';
-            var username = '';
-            var isAuthenticated = false;
-            var role = '';
-            var authToken;
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" maxlength="40" name="username" placeholder="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" maxlength="40" name="password" placeholder="password" required>
+                    </div>
 
-            function validateForm() {
-                var x = document.forms["login"]["username"].value;
-                if (x == null || x == "") {
-                    alert("Please fill out the username");
-                    return false;
-                }
-            }
+                    <button type="submit" onclick="login()" class="btn btn-primary btn-block">Login</button>
+                    <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+                </form>
+                <div class="btn-group btn-group-justified">
 
-            function login(user) {
-                return $q(function (resolve, reject) {
-                    $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
-                        if (result.data.success) {
-                            console.log("saving the token");
-                            storeUserCredentials(result.data.token);
-                            resolve(result.data.msg);
-                        } else {
-                            reject(result.data.msg);
-                        }
-                    });
-                });
-            }
+                </div>
+                <form name="forgotenpassword" action="api/users" method="get" accept-charset="utf-8">
+                    <button type="submit" class="btn btn-primary btn-block" disabled>Forgoten Password</button>
+                </form>
 
-            function storeUserCredentials(token) {
-                window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-                useCredentials(token);
-            }
+            </div>
+        </div>
+    </div>
 
-            function useCredentials(token) {
-                username = token.split('.')[0];
-                isAuthenticated = true;
-                authToken = token;
+    <div id="register" class="container  vertical-center">
+        <div class="jumbotron">
+            <h2>Registration Form</h2>
+            <form name="register" action="api/signup" method="post" accept-charset="utf-8">
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-2 col-form-label">Name</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" placeholder="enter your name" id="example-text-input" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-2 col-form-label">Surname</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" placeholder="enter your surname" id="example-text-input" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-2 col-form-label">Username</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" placeholder="enter your name" id="example-text-input" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-password-input" class="col-xs-2 col-form-label">Password</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="password" id="example-password-input" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-email-input" class="col-xs-2 col-form-label">Email</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="email" placeholder="enter your email" id="example-email-input">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-tel-input" class="col-xs-2 col-form-label">Telephone</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="tel" placeholder="enter your phone number" id="example-tel-input">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-xs-2 col-form-label">City</label>
+                    <div class="col-xs-10">
+                        <input class="form-control" type="text" placeholder="enter where you stay" id="example-text-input">
+                    </div>
+                </div>
 
-                if (username == 'admin') {
-                    role = USER_ROLES.admin
-                }
-                if (username == 'user') {
-                    role = USER_ROLES.public
-                }
 
-                // Set the token as header for your requests!
-                $http.defaults.headers.common['X-Auth-Token'] = token;
-            }
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+        </div>
+    </div>
 
-            var logout = function () {
-                destroyUserCredentials();
-            };
+    <div id="about" class="container vertical-center">
+        <div class="jumbotron text-left">
+            <h2 name="about">About LifeGuide Toolbox</h2>
+            <p class="text-justify">
+                The LifeGuide research programme is a multidisciplinary initiative led by Professor Lucy Yardley (Psychology) and Dr Mark Weal (Computer Science) at the University of Southampton.
+            </p>
+            <p class="text-justify">
+                We have developed a unique set of open source software tools, the ‘LifeGuide’, that allows intervention designers with no experience of programming to create interactive web-based interventions to support healthy behaviour.
+            </p>
+            <p class="text-justify">
+                Using this software platform, we have been developing and successfully trialling numerous interventions for PC, tablet and smart phone, including public health interventions (e.g. for weight management, physical activity support, hand hygiene, smoking cessation) and illness management interventions (e.g. for hypertension, diabetes, cancer, back pain, dizziness, fatigue, stress, stroke, respiratory conditions, eczema and irritable bowel).
+            </p>
+            <p class="text-justify">
+                Our interventions are now being disseminated in the UK and internationally by the NHS, public health teams and education websites for health professionals.
+            </p>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Copyright University of Southampton 2016</span>
+        </div>
+    </footer>
 
-            function destroyUserCredentials() {
-                authToken = undefined;
-                username = '';
-                isAuthenticated = false;
-                $http.defaults.headers.common['X-Auth-Token'] = undefined;
-                window.localStorage.removeItem(LOCAL_TOKEN_KEY);
-            }
 
-            var isAuthorized = function (authorizedRoles) {
-                if (!angular.isArray(authorizedRoles)) {
-                    authorizedRoles = [authorizedRoles];
-                }
-                return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
-            };
-
-            function tokenManagement() {
-                var token = window.localStorage.getItem('token');
-                if (token) {
-                    options.headers = {
-                        'x-access-token': token
-                    }
-                }
-            }
-        }());
-    </script>
 </body>
 
 </html>

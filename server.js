@@ -92,6 +92,11 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// Serve the js file
+//app.get('/client/js/authService.js', function (req, res) {
+//res.sendFile(path.join(__dirname + '/client/js/authService.js'));
+//});
+
 // =======================
 // routes ================
 // =======================
@@ -203,13 +208,14 @@ apiRoutes.post('/authenticate', function (req, res) {
                         user: user.toJSON()
                     });
 
+                    */
+
                     // return the information including token as JSON
-                    //*
                     res.json({
                         success: true,
                         token: 'JWT ' + token
                     });
-                    //*/
+
                 } else {
                     res.send({
                         success: false,
@@ -256,14 +262,17 @@ apiRoutes.post('/signup', function (req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({
             success: false,
-            msg: 'Please pass user name and password.'
+            msg: 'Please pass username and password.'
         });
     } else {
         var newUser = new User({
             name: req.body.name,
             surname: req.body.surname,
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
+            email: req.body.email,
+            tel: req.body.tel,
+            location: req.body.location
         });
         // save the user
         newUser.save(function (err) {

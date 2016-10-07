@@ -308,6 +308,7 @@ apiRoutes.get('/dashboard', passport.authenticate('jwt', {
                     msg: 'Authentication failed. User not found.'
                 });
             } else {
+                //nest a method to get all inteventions and send them to the user
                 res.json({
                     success: true,
                     msg: 'Welcome in the member area ' + user.name + '!'

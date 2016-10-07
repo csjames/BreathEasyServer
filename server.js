@@ -62,7 +62,7 @@ var credentials = {
     cert: certificate
 };
 
-// Check if we successfully connected in the db
+// Check if we successfully connected with the db
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
@@ -92,10 +92,10 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-// Serve the js file
-//app.get('/client/js/authService.js', function (req, res) {
-//res.sendFile(path.join(__dirname + '/client/js/authService.js'));
-//});
+// Make the favicon available to the client
+app.get('/client/img/icon.png', function (req, res) {
+    res.sendFile(path.join(__dirname + '/client/img/icon.png'));
+});
 
 // =======================
 // routes ================
@@ -290,8 +290,8 @@ apiRoutes.post('/signup', function (req, res) {
     }
 });
 
-// Protected route using JWT to a restricted info (GET http://localhost:8080/api/memberinfo)
-apiRoutes.get('/memberinfo', passport.authenticate('jwt', {
+// Protected route using JWT to a restricted dashboard page with all the interventions (GET http://localhost:8080/api/dashboard)
+apiRoutes.get('/dashboard', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
     var token = getToken(req.headers);

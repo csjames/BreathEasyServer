@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LifeGuide Toolbox Admin Page</title>
 
-    <link rel="icon" type="image/png" href="/img/icon.png" />
+    <link rel="icon" type="image/png" href="http://localhost:8080/client/img/icon.png" />
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -176,6 +176,7 @@
         <div id="dashboard" class="container vertical-center">
             <div class="jumbotron text-center">
                 <h2>Dashboard</h2>
+
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -225,9 +226,9 @@
                     vm.user = {};
                     vm.customError = {};
 
-                    document.getElementById("dashboard").addEventListener('', function () {
-                        AuthService.accessSecureArea();
-                    });
+                    //document.getElementById("dashboard").addEventListener('mouseover', function () {
+                    //  AuthService.accessSecureArea();
+                    //});
 
                     vm.loginUser = function (user) {
                         console.log('called from html');
@@ -238,7 +239,9 @@
                         AuthService.logout();
                     };
 
+
                     vm.parseInterventionList = function () {
+                        console.log('parse interventions');
                         AuthService.accessSecureArea();
                     };
                 })
@@ -267,6 +270,13 @@
                                     storeUserCredentials(result.data.token);
                                     console.log(result.data.token);
                                     resolve(result.data.msg);
+
+                                    setTimeout(function () {
+                                        console.log('parse interventions');
+                                        accessSecureArea();
+                                    }, 1000);
+
+
                                 } else {
                                     reject(result.data.msg);
                                     console.log(result.data.msg + user);
@@ -278,10 +288,28 @@
                     }
 
                     var accessSecureArea = function () {
-                        $http.get(API_ENDPOINT + '/memberinfo').then(function (result) {
+                        //var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+                        // Set the token as header for your requests!
+                        //$http.defaults.headers.common['X-Auth-Token'] = token;
+
+
+
+                        $http.get(API_ENDPOINT + '/dashboard').then(function (result) {
+                            //vm.memberinfo = result.data.msg;
+                            console.log(result.data.msg);
+                        });
+
+                        /*
+                        $http({
+                            url: API_ENDPOINT + '/dashboard',
+                            method: 'get',
+                            headers: {
+                                'x-access-token': token
+                            }
+                        }).then(function (result) {
                             vm.memberinfo = result.data.msg;
                             console.log(resul.data.msg);
-                        });
+                        }); */
                     };
 
                     function registerUser(user) {
@@ -314,7 +342,8 @@
                         }
 
                         // Set the token as header for your requests!
-                        $http.defaults.headers.common['X-Auth-Token'] = token;
+                        //$http.defaults.headers.common['X-Auth-Token'] = token;
+                        $http.defaults.headers.common['authorization'] = token;
                     }
 
                     var logout = function () {
@@ -337,7 +366,7 @@
                     };
 
                     function tokenManagement() {
-                        var token = window.localStorage.getItem('token');
+                        var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
                         if (token) {
                             options.headers = {
                                 'x-access-token': token
@@ -347,7 +376,8 @@
                     return {
                         loginUser: loginUser,
                         logout: logout,
-                        accessSecureArea: accessSecureArea
+                        accessSecureArea: accessSecureArea,
+                        tokenManagement: tokenManagement
                     };
 
                 });

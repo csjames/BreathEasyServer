@@ -67,7 +67,7 @@ var credentials = {
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-    console.log('Successfully conected to the MongoDB database');
+    console.log('Successfully conected to MongoDB: ' + config.database);
 });
 
 app.set('superSecret', config.secret); // Secret variable

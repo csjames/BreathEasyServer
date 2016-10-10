@@ -24,7 +24,7 @@ var InterventionSchema = new Schema({
         required: true,
         unique: true
     },
-    data: String
+    data: Object
 });
 
 // Create a schema, it define the structure of documents within a collection

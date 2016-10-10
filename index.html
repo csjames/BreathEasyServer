@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="serManModule">
+<html ng-app="serverManagementModule">
 
 <head>
     <meta charset="UTF-8">
@@ -19,12 +19,16 @@
             display: flex;
             align-items: top;
         }
+
+        body {
+            overflow-y: hidden;
+        }
     </style>
 
 </head>
 
 <body>
-    <div ng-controller="serManCtrl as smCtrl">
+    <div ng-controller="serverManagementCtrl as smCtrl">
         <div class="container">
             <nav class="navbar-fixed-top navbar-inverse">
                 <div class="container-fluid">
@@ -184,6 +188,9 @@
         <div id="dashboard" class="container vertical-center">
             <div class="jumbotron text-center">
                 <h2>Dashboard</h2>
+                <div class="pull-right">
+                    <input type="search" placeholder="Search for intervention" ng-model="searchItem" ng-change="smCtrl.search(searchItem)">
+                </div>
 
                 <div class="table-responsive">
                     <table class="table">
@@ -203,6 +210,14 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="form-group row">
+                    <label>ID</label>
+                    <input type="text" id=interventionName placeholder="Intervention ID" />
+                    <input type="file" id="file" />
+                    <button class="btn btn-primary btn-med" ng-click="smCtrl.fileUpload()">Add Intervention</button>
+                </div>
+                <p>{{smCtrl.fileData}}</p>
                 <p class="text-justify">
                     <strong>Please Note:</strong> You must be signed in to view this page, please click <a href="#login">here</a> to signin. If you are not registered please click <a href="#register">here</a> to register with us.
                 </p>
@@ -228,11 +243,51 @@
     <script>
         (function () {
             'use strict';
-            angular.module('serManModule', [])
-                .controller('serManCtrl', function (AuthService) {
+            angular.module('serverManagementModule', [])
+                .controller('serverManagementCtrl', function (AuthService) {
                     var vm = this;
                     vm.user = {};
                     vm.customError = null;
+                    vm.fileData = {};
+
+                    vm.search = function (val) {};
+
+                    vm.fileUpload = function () {
+                        console.info('file upload');
+                        var file = document.getElementById('file').files[0],
+                            reader = new FileReader();
+                        reader.onloadend = function (e) {
+                            vm.FileData = e.target.result;
+                        }
+                        reader.onerror = function (event) {
+                            console.error('File could not be read!' + event.target.error.code);
+                        };
+                    };
+
+                    vm.openFileDialog = function () {
+                        console.info('openFileDialog()');
+                        ionic.trigger('click', {
+                            target: document.getElementById('file')
+                        });
+                    };
+
+                    angular.element(document).find('input').on('change', function (event) {
+                        console.info('element change event');
+                        file = event.target.files[0];
+                        vm.fileName = file.name;
+                        var reader = new FileReader();
+                        // Closure to capture the file information
+                        reader.onload = function (event) {
+                            vm.contents = event.target.result;
+                            console.info('File contents: ' + vm.contents);
+                        };
+                        reader.onerror = function (event) {
+                            console.error('File could not be read!' + event.target.error.code);
+                        };
+                        // Read the file contents as text
+                        reader.readAsText(file);
+                        console.info('uploaded file: ' + vm.fileName);
+                    });
 
 
                     //document.getElementById("dashboard").addEventListener('mouseover', function () {
@@ -252,6 +307,17 @@
                     vm.parseInterventionList = function () {
                         console.log('parse interventions');
                         AuthService.accessSecureArea();
+                    };
+                })
+
+            .directive('search', function () {
+                    return function ($scope, element) {
+                        element.bind("keyup", function (event) {
+                            var val = element.val();
+                            if (val.length > 2) {
+                                $scope.search(val);
+                            }
+                        });
                     };
                 })
                 .service('AuthService', function ($q, $http) {

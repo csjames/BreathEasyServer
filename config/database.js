@@ -12,7 +12,8 @@
  *                                                                             *
  **************************************************************************** */
 
+//test is the database name
 module.exports = {
-  'secret': 'xolWwouncmxzWEnb339)00)wf)i)qQ12vncmuBE$4&5&6zy&4fcb£qzQ92Ur9',
-  'database': 'mongodb://localhost:27017/test'
+    'secret': 'xolWwouncmxzWEnb339)00)wf)i)qQ12vncmuBE$4&5&6zy&4fcb£qzQ92Ur9',
+    'database': 'mongodb://localhost:27017/test'
 };

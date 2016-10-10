@@ -27,6 +27,7 @@ var jwt = require('jwt-simple');
 var config = require('./config/database');
 var User = require('./app/models/user'); // get our mongoose model
 var DataEntry = require('./app/models/data');
+var Intervention = require('./app/models/intervention');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
@@ -256,6 +257,34 @@ apiRoutes.post('/store', function (req, res) {
     }
 });
 
+// Route to store user feedback informations (POST http://localhost:8080/api/store)
+apiRoutes.post('/saveintervention', function (req, res) {
+    if (!req.body.key || !req.body.data) {
+        res.json({
+            success: false,
+            msg: 'Please pass intervention key and value.'
+        });
+    } else {
+        var newIntervention = new Intervention({
+            key: req.body.key,
+            data: req.body.data
+        });
+        // save the user
+        newIntervention.save(function (err) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    msg: 'Intervention name already exists, please use a different name for your intervention.'
+                });
+            }
+            res.json({
+                success: true,
+                msg: 'Successfully stored your intervention in the database.'
+            });
+        });
+    }
+});
+
 
 // Route to create a new user account (POST http://localhost:8080/api/signup)
 apiRoutes.post('/signup', function (req, res) {
@@ -336,7 +365,9 @@ var getToken = function (headers) {
     }
 };
 
-// TODO: route middleware to verify a token
+// TODO: One of the option is to implement a route middleware to verify a token and will not allow
+// for access to other routes unless a user is authenticated, please note that the order of the routes
+// determines what can be accessed with and without authentication
 
 // route to show a random message (GET http://localhost:8080/api/)
 apiRoutes.get('/', function (req, res) {
@@ -352,6 +383,13 @@ apiRoutes.get('/users', function (req, res) {
     });
 });
 
+// route to return all users (GET http://localhost:8080/api/users)
+apiRoutes.get('/interventions', function (req, res) {
+    Intervention.find({}, function (err, users) {
+        res.json(users);
+    });
+});
+
 // route to return all stored date (GET http://localhost:8080/api/storedData)
 apiRoutes.get('/storedData', function (req, res) {
     DataEntry.find({}, function (err, data) {
@@ -363,9 +401,8 @@ apiRoutes.get('/storedData', function (req, res) {
 app.use('/api', apiRoutes);
 
 // =======================
-// start the server ======
+// start the http and https servers ======
 // =======================
-//app.listen(port);
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 

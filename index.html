@@ -232,7 +232,8 @@
                 .controller('serManCtrl', function (AuthService) {
                     var vm = this;
                     vm.user = {};
-                    vm.customError = {};
+                    vm.customError = null;
+
 
                     //document.getElementById("dashboard").addEventListener('mouseover', function () {
                     //  AuthService.accessSecureArea();

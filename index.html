@@ -113,48 +113,48 @@
                 <form name="registration" action="api/signup" method="post" accept-charset="utf-8">
                     <h2>Registration Form</h2>
                     <div class="form-group row">
-                        <label for="name" class="col-xs-2 col-form-label">Name</label>
-                        <div class="col-xs-10">
+                        <label for="name" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="text" name="name" placeholder="enter your name" id="name" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="surname" class="col-xs-2 col-form-label">Surname</label>
-                        <div class="col-xs-10">
+                        <label for="surname" class="col-md-2 col-form-label">Surname</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="text" name="surname" placeholder="enter your surname" id="surname" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="username" class="col-xs-2 col-form-label">Username</label>
-                        <div class="col-xs-10">
+                        <label for="username" class="col-md-2 col-form-label">Username</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="text" name="username" placeholder="enter your name" id="username" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="password" class="col-xs-2 col-form-label">Password</label>
-                        <div class="col-xs-10">
+                        <label for="password" class="col-md-2 col-form-label">Password</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="password" name="password" id="password" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="email" class="col-xs-2 col-form-label">Email</label>
-                        <div class="col-xs-10">
+                        <label for="email" class="col-md-2 col-form-label">Email</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="email" name="email" placeholder="enter your email" id="email" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="tel" class="col-xs-2 col-form-label">Telephone</label>
-                        <div class="col-xs-10">
+                        <label for="tel" class="col-md-2 col-form-label">Telephone</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="text" name="tel" placeholder="enter your phone number" id="tel">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="locaction" class="col-xs-2 col-form-label">Location</label>
-                        <div class="col-xs-10">
+                        <label for="locaction" class="col-md-2 col-form-label">Location</label>
+                        <div class="col-md-5">
                             <input class="form-control" type="text" name="location" placeholder="enter the city/town/vilage you stay" id="location">
                         </div>
                     </div>
-                    <div class="col-xs-offset-2 col-xs-10">
+                    <div class="col-md-offset-2 col-md-2">
                         <button type="submit" onclick="registerUser(registration)" class="btn btn-primary btn-med">Register</button>
                     </div>
                 </form>
@@ -212,8 +212,8 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="interventionName" class="col-md-2 control-label">ID</label>
-                    <div class="col-md-2">
+                    <label for="interventionName" class="col-md-1 control-label">ID</label>
+                    <div class="col-md-3">
                         <input type="text" id="interventionName" ng-model="smCtrl.interventionID" class="form-control" placeholder="Intervention ID" />
                     </div>
                     <div class="col-md-4">
@@ -255,7 +255,7 @@
                     vm.user = {};
                     vm.customError = null;
                     vm.fileData = {};
-                    vm.interventionID = {};
+                    vm.interventionID = null;
                     var interventionContent = {};
 
                     vm.search = function (val) {};
@@ -472,7 +472,7 @@
                     authToken = undefined;
                     username = '';
                     isAuthenticated = false;
-                    $http.defaults.headers.common['X-Auth-Token'] = undefined;
+                    $http.defaults.headers.common['authorization'] = undefined; //changed X-Auth-Token to authorization
                     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
                 }
 
@@ -487,8 +487,8 @@
                     var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
                     if (token) {
                         options.headers = {
-                            'x-access-token': token
-                        }
+                                'x-access-token': token
+                            } //changed to authorization
                     }
                 }
                 return {

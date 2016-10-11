@@ -383,10 +383,10 @@ apiRoutes.get('/users', function (req, res) {
     });
 });
 
-// route to return all users (GET http://localhost:8080/api/users)
+// route to return all users (GET http://localhost:8080/api/interventions)
 apiRoutes.get('/interventions', function (req, res) {
-    Intervention.find({}, function (err, users) {
-        res.json(users);
+    Intervention.find({}, function (err, interventions) {
+        res.json(interventions);
     });
 });
 

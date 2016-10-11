@@ -202,10 +202,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row"></th>
-                                <td>0000000000</td>
-                                <td>example</td>
+                            <tr ng-repeat="intervention in smCtrl.interventionList.data">
+                                <th>{{$index}}</th>
+                                <td>{{intervention.key}}</td>
+                                <td>{{intervention.key}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -250,15 +250,28 @@
         (function () {
             'use strict';
             angular.module('serverManagementModule', [])
-                .controller('serverManagementCtrl', function (AuthService, dataManager) {
+                .controller('serverManagementCtrl', function (AuthService, dataManager, $http) {
                     var vm = this;
                     vm.user = {};
                     vm.customError = null;
                     vm.fileData = {};
                     vm.interventionID = null;
                     var interventionContent = {};
+                    var API_ENDPOINT = 'http://localhost:8080/api';
 
                     vm.search = function (val) {};
+
+                    var parseInterventions = function () {
+
+                        $http.get(API_ENDPOINT + '/interventions').then(function (result) {
+                            //vm.memberinfo = result.data.msg;
+                            console.log(result.data.msg);
+                            vm.interventionList = result;
+                        });
+
+                    };
+
+                    parseInterventions();
 
                     vm.fileUpload = function () {
                         console.info('file upload');
@@ -405,12 +418,12 @@
                     });
                 }
 
+
+
                 var accessSecureArea = function () {
                     //var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
                     // Set the token as header for your requests!
                     //$http.defaults.headers.common['X-Auth-Token'] = token;
-
-
 
                     $http.get(API_ENDPOINT + '/dashboard').then(function (result) {
                         //vm.memberinfo = result.data.msg;

@@ -27,6 +27,21 @@ var InterventionSchema = new Schema({
     data: Object
 });
 
+// on every save, add the date
+InterventionSchema.pre('save', function (next) {
+    // get the current date
+    var currentDate = new Date();
+
+    // change the updated_at field to current date
+    this.updated_at = currentDate;
+
+    // if created_at doesn't exist, add to that field
+    if (!this.created_at)
+        this.created_at = currentDate;
+
+    next();
+});
+
 // Create a schema, it define the structure of documents within a collection
 // Create a model using a schema, models are used to create instances of data that will be stored in documents
 // Mongoose also creates a MongoDB collection called 'User' for these documents

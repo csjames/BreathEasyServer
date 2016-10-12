@@ -390,6 +390,15 @@ apiRoutes.get('/interventions', function (req, res) {
     });
 });
 
+// route to return all users (GET http://localhost:8080/api/getintervention)
+apiRoutes.get('/getintervention', function (req, res) {
+    Intervention.find({
+        key: req.body.key
+    }, function (err, intervention) {
+        res.json(intervention.data);
+    });
+});
+
 // route to return all stored date (GET http://localhost:8080/api/storedData)
 apiRoutes.get('/storedData', function (req, res) {
     DataEntry.find({}, function (err, data) {

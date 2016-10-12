@@ -193,18 +193,16 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-inverse">
                             <tr>
                                 <th>#</th>
                                 <th>Intervention ID</th>
-                                <th>Intervention Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="intervention in smCtrl.interventionList.data">
-                                <th>{{$index}}</th>
-                                <td>{{intervention.key}}</td>
+                                <td>{{$index}}</td>
                                 <td>{{intervention.key}}</td>
                             </tr>
                         </tbody>

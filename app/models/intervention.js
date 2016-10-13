@@ -19,12 +19,13 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcryptjs');
 
 var InterventionSchema = new Schema({
+    name: String,
     key: {
         type: String,
         required: true,
         unique: true
     },
-    data: Object
+    data: Schema.Types.Object
 });
 
 // on every save, add the date

@@ -98,6 +98,13 @@ app.get('/client/img/icon.png', function (req, res) {
     res.sendFile(path.join(__dirname + '/client/img/icon.png'));
 });
 
+//Log the client IP on every request
+app.use(function (req, res, next) {
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log('Client IP:', ip);
+    next();
+});
+
 // =======================
 // routes ================
 // =======================
@@ -174,7 +181,7 @@ app.get('/resources/sample12Model', function (req, res) {
 // get an instance of the router for api routes
 var apiRoutes = express.Router();
 
-// Route to authenticate a user (POST http://localhost:8080/api/authenticate)
+// Route to authenticate a user (accessed at POST http://localhost:8080/api/authenticate)
 apiRoutes.post('/authenticate', function (req, res) {
     User.findOne({
         username: req.body.username
@@ -229,7 +236,7 @@ apiRoutes.post('/authenticate', function (req, res) {
 });
 
 
-// Route to store user feedback informations (POST http://localhost:8080/api/store)
+// Route to store user feedback informations (accessed at POST http://localhost:8080/api/store)
 apiRoutes.post('/store', function (req, res) {
     if (!req.body.key || !req.body.data) {
         res.json({
@@ -257,7 +264,7 @@ apiRoutes.post('/store', function (req, res) {
     }
 });
 
-// Route to store user feedback informations (POST http://localhost:8080/api/store)
+// Route to create a new intervention entry on the database (accessed at POST http://localhost:8080/api/saveintervention)
 apiRoutes.post('/saveintervention', function (req, res) {
     if (!req.body.key || !req.body.data) {
         res.json({
@@ -383,14 +390,64 @@ apiRoutes.get('/users', function (req, res) {
     });
 });
 
-// route to return all users (GET http://localhost:8080/api/interventions)
+// route to return all interventions on the database (GET http://localhost:8080/api/interventions)
 apiRoutes.get('/interventions', function (req, res) {
     Intervention.find({}, function (err, interventions) {
         res.json(interventions);
     });
 });
 
-// route to return all users (GET http://localhost:8080/api/getintervention)
+// CRUD Routes  (GET http://localhost:8080/api/intervention)
+apiRoutes.route('/intervention/:intervention_id')
+
+// Get the intervention with this id (accessed at GET http://localhost:8080/api/intervetnion/:intervention_id)
+.get(function (req, res) {
+    Intervention.findById(req.params.intervention_id, function (err, intervention) {
+        if (err)
+            res.send(err);
+        res.json(intervention);
+    });
+})
+
+// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervetnion/:intervention_id)
+.put(function (req, res) {
+
+    // use our bear model to find the intervention we want
+    Intervention.findById(req.params.intervention_id, function (err, intervention) {
+
+        if (err)
+            res.send(err);
+
+        intervention.name = req.body.name; // update the intervention info
+
+        // save the intervention
+        intervention.save(function (err) {
+            if (err)
+                res.send(err);
+
+            res.json({
+                message: 'Intervention updated!'
+            });
+        });
+
+    });
+})
+
+// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervetnion/:intervention_id)
+.delete(function (req, res) {
+    Intervention.remove({
+        _id: req.params.intervention_id
+    }, function (err, bear) {
+        if (err)
+            res.send(err);
+
+        res.json({
+            message: 'Intervention successfully deleted'
+        });
+    });
+});
+
+// route to return an intervention (GET http://localhost:8080/api/getintervention)
 apiRoutes.post('/getintervention', function (req, res) {
     if (!req.body.key) {
         res.json({

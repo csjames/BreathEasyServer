@@ -49,6 +49,7 @@ var sample9Model = JSON.parse(fs.readFileSync('resources/sample9.json', 'utf8'))
 var sample10Model = JSON.parse(fs.readFileSync('resources/sample10.json', 'utf8'));
 var sample11Model = JSON.parse(fs.readFileSync('resources/sample11.json', 'utf8'));
 var sample12Model = JSON.parse(fs.readFileSync('resources/sample12.json', 'utf8'));
+var healthyMind = JSON.parse(fs.readFileSync('resources/healthymind.json', 'utf8'));
 
 
 // =======================
@@ -74,7 +75,7 @@ app.set('superSecret', config.secret); // Secret variable
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
 app.use(bodyParser.json());
 
@@ -174,6 +175,10 @@ app.get('/resources/sample11Model', function (req, res) {
 
 app.get('/resources/sample12Model', function (req, res) {
     res.jsonp(sample12Model);
+});
+
+app.get('/resources/healthyMind', function (req, res) {
+    res.jsonp(healthyMind);
 });
 
 // Set up a JWT RESTfull (Representational State Transfer) API strategy for user authentication

@@ -1,0 +1,633 @@
+{
+    "applicationName": "Healthy Mind",
+    "content": [{
+        "content": {
+            "items": [{
+                    "content": {
+                        "text": "<p><ul><li>An app that gives you a range of different tools that are scientifically proven to lift your mood and help you deal with things like stress and worry that can make you feel down.</li><li>All the tools have been created by health experts at the University of Southampton, UK, and i4health, Palo Alto University, US.</li></ul><b>How does Healthy Mind work?</b><ul><li>Healthy Mind has a range of 9 different tools that do different things.</li><li>Some of the tools will help you to become more aware of the things you think and do when you feel down or stressed.</li><li>Other tools will help you to plan things you can do to help you feel better and more positive.</li><li>You can try out any of the tools to see what works for you.</li></ul><b>How can Healthy Mind help me?</b><ul><li>We all have times when we feel down or stressed.  Healthy Mind can help you find out about ways to make those times a little bit easier.</li><li>Thinking about what you do when you are down or stressed can help you to spot the things you do that make you feel worse - but also the positive things that can help you to feel good!</li><li>Doing more of the things that you enjoy and that help you to relax can help you to deal with stress better.</li><li>Healthy Mind can remind you of the simple things that help you to feel calm and happy - but that we often neglect to do!</li> <br/><b>The Forum and Popular Tools features</b><ul><li>If the version of your  app has two additional features, namely the Forum and Popular tools, you can use the forum to communicate with other users  as well as knowing about the most popularly used tools. Please note that these features require an Internet connection to be able to show you the latest updates.</li> <br/></p>",
+                        "title": "Healthymind",
+                        "type": 1
+                    },
+                    "id": "infohealthymind",
+                    "label": "What is Healthymind",
+                    "type": "info"
+            },
+                {
+                    "id": "toolsmenuid",
+                    "label": "Tools Menu",
+                    "type": "menu",
+                    "content": {
+                        "items": [{
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>Research shows that <b>spending time with other people helps us to feel good</b>.<br/><br/>This tool can <b>help you to plan</b> to spend time with others.<br/><br/>We often feel down when there are a lot of stressful moments in our lives.  <b>Evidence shows that we also feel down when there are a lack of good moments in our lives</b>.<br/><br/>Doing things with other people <b>increases the number of enjoyable moments</b> in your life.<br/><br/> It can be difficult to find time to do things with other people when you are feeling down or tired.  But this is exactly the time when you need to do more things you enjoy.  <b>Setting plans is a proven way of making things happen</b>.<br/><br/><b>Click 'next'</b> to make a plan.</p>",
+                                                "title": "Connect With Others",
+                                                "type": 1
+                                            },
+                                            "id": "AboutConnectWithOthers",
+                                            "label": "About Connect With Others",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "editPlanner": "CWOPlanner",
+                                                "feedback": {
+                                                    "text": "<p><b>This review</b> you have connected $ConnectWithOthersPlansReviewlastScore times with others. <b>Since you started using HealthyMind</b>, you have connected $ConnectWithOthersPlansReviewcwoTotalScore times with others.</p>",
+                                                    "title": "Feedback",
+                                                    "type": 1
+                                                },
+                                                "headerText": "Tick the plans you've done",
+                                                "title": "My Plans",
+                                                "type": "text"
+                                            },
+                                            "navCondition": {
+                                                "op": "=",
+                                                "varA": "CWOPlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "ConnectWithOthersPlansReview",
+                                            "label": "Connect With Others Plans Review",
+                                            "type": "planner_review"
+                            },
+                                        {
+                                            "id": "CWOPlanner",
+                                            "type": "planner",
+                                            "label": "Connect With Others Planner",
+                                            "content": {
+                                                "type": "text",
+                                                "title": "Your Plans",
+                                                "headerText": "Who do you want to spend more time with? What will you do? When will it happen?",
+                                                "maxPlans": 4,
+                                                "fields": [{
+                                                        "key": "who",
+                                                        "label": "Who",
+                                                        "description": "(e.g. partner, friends, colleagues, family, general public)"
+                                    },
+                                                    {
+                                                        "key": "what",
+                                                        "label": "What",
+                                                        "description": "(e.g. call round, meet in town, tea break at work)"
+                                    },
+                                                    {
+                                                        "key": "when",
+                                                        "label": "When",
+                                                        "description": "(e.g. Saturday lunchtime, Sunday morning, Monday at 11am)"
+                                    }]
+                                            },
+                                            "postActivity": [{
+                                                "id": "set",
+                                                "function": "set",
+                                                "var": "CWOPlannerDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "CWOPlannerDone",
+                                                "varB": "1"
+                                            }
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>You can <b>use Healthy Mind to keep track of your plans</b> and whether or not you've stuck to them.<br/><br/>When you log back into 'connect with others' you'll be able to:<br/><br/><ul><li>See your current plans</li><li>Tick them off as you do them</li><li>Make new plans</li></ul><br/><br/><b>",
+                                                "title": "Keep track",
+                                                "type": 1
+                                            },
+                                            "postActivity": [{
+                                                "id": "13",
+                                                "function": "set",
+                                                "var": "CWOPlannerInfoDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "CWOPlannerInfoDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "CWOPlannerbackinfo",
+                                            "label": "CWO Info",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "ConnectWithOthers",
+                                "label": "Connect With Others",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>Walking with awareness means <b>choosing to notice more about the experience of walking</b> and the movements we make.<br/><br/>It will <b>focus your mind on the here and now</b>.<br/><br/>This can <b>give your mind a break from thinking</b> about things you need to do or things that have already happened.<br/><br/>It can also <b>help you to appreciate everyday activities</b> that we can often take for granted.<br/><br/><b>Click 'next'</b> to find out how to walk with awareness.</p>",
+                                                "title": "Walking with awareness",
+                                                "type": 1
+                                            },
+                                            "id": "WalkingwithAwarenessDescription",
+                                            "label": "Walking with Awareness - Description",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p><br/><br/>Go for a <b>10-15 minute</b> walk.<br/><br/>Before you start, <b>notice how it feels to stand still</b>. Then, as you walk, <b>pay attention to your body and how it's feeling:</b><br/><ul><li>Notice the <b>feeling of pressure</b> as each foot makes contact with the ground and then leaves the ground.</li><li>Notice <b>how your feet support the weight of your body</b> as you move forwards.</li><li>Notice your <b>leg muscles</b> and the <b>changing physical sensations in your legs and hips</b>.</li><li>Notice your <b>sense of balance</b> changing.</li></ul><br/>You may also start thinking about what's going on around you, where you're going, the weather etc.<br/><br/>That's OK, just notice these other thoughts and then try to bring your awareness back to the physical sensation of walking.<br/><br/> </p>",
+                                                "title": "Try it out",
+                                                "type": 1
+                                            },
+                                            "id": "WalkingwithawarenessTryitout",
+                                            "label": "Walking with awareness - Try it out",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "WalkingwithAwareness",
+                                "label": "Walking with Awareness",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>Taking a 3 minute breathing space can <b>give us time out from our problems and busy lives</b>.<br/><br/>Taking time out can <b>help you to feel calm</b> and <b>think more clearly</b> about your problems.<br/><br/>This helps you to <b>see how you can deal with your problems</b> in new and better ways.<br/><br/><b>Click 'next'</b> to find out how to take a 3 minute breathing space.</p>",
+                                                "title": "3 Minute Breathing Space",
+                                                "type": 1
+                                            },
+                                            "id": "3MinuteBreathingSpaceDesciption",
+                                            "label": "3 Minute Breathing Space - Description",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>A description of a 3-minute breathing space.<br/><br/><b>Sit comfortably</b> with your hands resting on your legs.<br/><br/>How does your <b>body</b> feel?<br/><ul><li>Notice the feeling of the seat you are sitting on</li><li>Notice the feeling in your sitting bones and the backs of your legs</li><li>Notice the feeling of your feet resting on the floor</li></ul><br/>Allow yourself to become more aware of your <b>surroundings</b>:<br/><ul><li>Where are you?</li><li>What's going on around you?</li><li>Notice any feelings about being where you are</li></ul><br/>Allow yourself to become more aware of your <b>breathing</b><br/><ul><li>Notice the feeling of air as you breathe in and out</li><li>You don't need to change your breathing - just notice how it feels</li></ul><br/>You may find that your mind wanders off.  That's fine, just return your attention to your breath and how your body is feeling.<br/><br/><b>Finish your breathing space by slowly bringing your attention back to where you are</b> e.g. the chair you're sitting on and the room you're sitting in.<br/><br/> </p>",
+                                                "title": "Try it out",
+                                                "type": 1
+                                            },
+                                            "id": "3MinuteBreathingSpaceTryitout",
+                                            "label": "3 Minute Breathing Space - Try it out",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "3MinuteBreathingSpace",
+                                "label": "3 Minute Breathing Space",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p><b>Choosing to focus on the good things in our lives can help to lift our mood</b>. Making a list of good thoughts can remind us to think more positively.<br/><br/><b>Thinking about positive things can help to stop you dwelling on your worries and problems</b>.<br/><br/>It's hard to think positively when you are feeling stressed or down. <b>Creating a list of positive thoughts can make it easier to remember the positive things in your life</b>.<br/><br/><b>Click 'next'</b> to create a list of positive thoughts that make you feel good.</p>",
+                                                "type": 1
+                                            },
+                                            "id": "AboutPositiveThinking",
+                                            "label": "About Positive Thinking",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "editPlanner": "PositivePlanner",
+                                                "feedback": {
+                                                    "text": "<p>Would you like to edit your list?</p>",
+                                                    "title": "Feedback",
+                                                    "type": 1
+                                                },
+                                                "title": "Your Positive Thoughts",
+                                                "type": "multiple-choice"
+                                            },
+                                            "navCondition": {
+                                                "op": "=",
+                                                "varA": "PositivePlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "PositiveThinkingPlansReview",
+                                            "label": "Positive Thinking Plans Review",
+                                            "type": "planner_review"
+                            },
+                                        {
+                                            "content": {
+                                                "headerText": "What things in your life do you appreciate? What good memories do you have? What good things have you done? We've listed some positive thoughts that help other people feel good.",
+                                                "title": "Your Positive Thoughts",
+                                                "maxPlans": 11,
+                                                "type": "multiple-choice",
+                                                "options": ["I go to work even when it’s really tough",
+                                    "I have a roof over my head and food in my cupboards",
+                                    "I have fantastic friends",
+                                    "I have a great pet",
+                                    "I always learn something new from dealing with a stressful situation",
+                                    "I have had awesome holidays",
+                                    "I like the feel of sunshine on my skin and wind on my face",
+                                    "I always try to do the best I can",
+                                    "I am strong for challenging myself to face things that scare me",
+                                    "I like the sound of waves crashing in the sea",
+                                    "I have a family I can rely on"]
+                                            },
+                                            "postActivity": [{
+                                                "id": "set",
+                                                "function": "set",
+                                                "var": "PositivePlannerDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "PositivePlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "PositivePlanner",
+                                            "label": "Positive Planner",
+                                            "type": "planner"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>You can <b>use Healthy Mind to remind yourself of your positive thoughts</b> each day or just when you need a mood lift.<br/><br/>When you log back into 'positive thinking' you'll be able to:<ul><li>See your list of positive thoughts</li><li>Add new thoughts to your list </li></ul> </p>",
+                                                "title": "Keep track",
+                                                "type": 1
+                                            },
+                                            "postActivity": [{
+                                                "id": "14",
+                                                "function": "set",
+                                                "var": "PositivePlannerInfoDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "PositivePlannerInfoDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "PositivePlannerbackinfo",
+                                            "label": "Positive Info",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "PositiveThinking",
+                                "label": "Positive Thinking",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>We often have trouble sleeping when we feel down or stressed. <b>Changing what we do before going to bed can help us get a better night's sleep</b>.<br/><br/>We often neglect to do simple things that can help us to sleep better - and then we wonder why we can't sleep! <br/><br/>Making a list of things you can do to help you get to sleep can <b>remind you to do them</b>.<br/><br/>You can use the sleep well tool to <b>keep track of whether or not you have done simple things that can help you sleep</b>.<br/><br/><b>Click 'next'</b> to find out how you can get a better night's sleep.</p>",
+                                                "title": "Sleep Well",
+                                                "type": 1
+                                            },
+                                            "id": "AboutSleepWell",
+                                            "label": "About Sleep Well",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "editPlanner": "SleepWellPlanner",
+                                                "feedback": {
+                                                    "text": "<p>Today you've done<b> $SleepWellPlansReviewlastScore </b>thing(s) to help you get a better night's sleep .<br/><br/>Since you started using HealthyMind, you've done things to help you get a better night's sleep on<b> $SleepWellPlansReviewswTotalReviews </b>day(s).</p><p> Click on 'Edit Plan(s)' if you would like to modify your existing plans or add new plans. If you want to keep your existing plans unchanged, click on 'Done'</p>",
+                                                    "title": "Feedback",
+                                                    "type": 1
+                                                },
+                                                "headerText": "Tick the things you've done today/yesterday to help you sleep",
+                                                "title": "My Plans",
+                                                "type": "multiple-choice"
+                                            },
+                                            "navCondition": {
+                                                "op": "=",
+                                                "varA": "SleepWellPlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "SleepWellPlansReview",
+                                            "label": "Sleep Well Plans Review",
+                                            "type": "planner_review"
+                            },
+                                        {
+                                            "id": "SleepWellPlanner",
+                                            "label": "Sleep Well Planner",
+                                            "content": {
+                                                "type": "multiple-choice",
+                                                "title": "How can you change your bedtime routine?",
+                                                "headerText": "Here's a list of proven ways to get a better night's sleep.  You can tick the ones you want to try.",
+                                                "maxPlans": 9,
+                                                "options": ["Only go to bed when you feel tired",
+                                    "Get up at the same time every morning (even at weekends)",
+                                    "Avoid taking naps",
+                                    "Keep your bedroom dark and at a comfortable temperature",
+                                    "Avoid drinking alcohol or coffee at least 2 hours before bed",
+                                    "Do something physically active during the day",
+                                    "Set aside 15 minutes during the day to worry about your problems(at least 2 hours before bed) instead of worrying about them all through the day",
+                                    "Take a 3-minute breathing space when you feel stressed or down",
+                                    "Do something relaxing before bed"]
+                                            },
+                                            "postActivity": [{
+                                                "id": "set",
+                                                "function": "set",
+                                                "var": "SleepWellPlannerDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "SleepWellPlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "type": "planner"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>You can <b>use Healthy Mind to keep track of the changes you make to your bedtime routine</b>.<br/><br/>When you log back into 'sleep well' you'll be able to:<br/><ul><li>See the list of changes you'd like to make</li><li>Tick them off each night</li><li>Add new things you'd like to try</li></ul><br/>  </p>",
+                                                "title": "Keep track",
+                                                "type": 1
+                                            },
+                                            "postActivity": [{
+                                                "id": "15",
+                                                "function": "set",
+                                                "var": "SleepWellPlannerInfoDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "SleepWellPlannerInfoDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "SleepWellPlannerbackinfo",
+                                            "label": "Sleep Well Info",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "SleepWell",
+                                "label": "Sleep Well",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>In a body scan we <b>focus our attention on different body parts</b> and notice how they feel.<br/><br/>Moving your awareness to different parts of the body <b>shows you that you are able to control what you pay attention to</b>.<br/><br/>Paying attention to how your body feels right now can <b>give your mind a break</b> from thinking about things that are getting you down.<br/><br/>Placing your hands on your legs or lightly touching your arm can also <b>trigger your body's natural calming system</b>.<br/><br/><b>Click 'next'</b> to find out how to take a body scan.</p>",
+                                                "title": "Body Scan",
+                                                "type": 1
+                                            },
+                                            "id": "BodyScanDesciption",
+                                            "label": "Body Scan - Description",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>A body scan can take around 10 minutes.<br/><br/>A description of a body scan.<br/><br/><b>Sit comfortably</b> and encourage your body to rest.  You can <b>focus on each step below for 2-3 minutes</b>.<br/><br/>Your mind may begin to wander. That's fine, just bring your attention back to your body and notice how it's feeling.<br/><ol><li>Focus your attention on the <b>weight of your body</b> sitting on the chair.  Notice how each <b>part of the body is feeling</b>.<br/><ul><li>your <b>shoulders, arms, hands, and fingers</b></li><li>your <b>hips, legs, feet and toes</b></li><li>your <b>neck, head, eyes, ears, and mouth</b></li></ul></li><li>Notice the <b>feeling of air flowing in and out of your body</b> as you breathe.<ul><li>Notice how the breath moves the tummy and ribs</li><li>Notice whether each breath is long or short</li></ul></li><li>Focus your attention on your <b>hands and rest them with the palms facing upwards</b>.<ul><li>As you <b>breathe out</b> softly <b>curl your fingers</b> in</li><li>As you <b>breathe in</b> <b>open your fingers up</b></li><li>Notice the <b>sensations in your fingers and thumbs</b> as they move</li></ul></li><li><b>Place one hand on your heart and one hand on your tummy</b>.<ul><li>Notice the <b>movement of your hands as you breathe</b> in and out</li></ul></li><li>Finish your body scan by slowly <b>resting your hands in your lap</b>.  Allow yourself to sit quietly for a moment.<ul><li>Notice how you are feeling right now</li></ul></li></ol><br/> </p>",
+                                                "title": "Try it out",
+                                                "type": 1
+                                            },
+                                            "id": "BodyScanTryitout",
+                                            "label": "Body Scan - Try it out",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "BodyScan",
+                                "label": "Body Scan",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p><b>What we do when we are stressed or worried can affect our mood</b>.  This tool will help you to <b>keep track of how you react to day-to-day events</b>.<br/><br/>It can make you <b>aware of the things you do that make you feel worse</b>.<br/><br/>It can also help you to <b>spot particular situations that lead you to react in ways that make you feel down</b>.<br/><br/>This can remind you to <b>stop doing these things</b>, and try to <b>find things that make you feel better instead</b>.<br/><br/>You can then <b>use other tools in the app to remind you of things you can do</b> instead that can help you feel better (e.g. enjoyable moments and positive thinking).<br/><br/><b>Click 'next'</b> to find out how to keep track of your reactions.</p>",
+                                                "title": "My Daily Reactions",
+                                                "type": 1
+                                            },
+                                            "id": "MyDailyReactionsDesciption",
+                                            "label": "My Daily Reactions - Description",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "questions": [{
+                                                        "question_id": "question1",
+                                                        "text": "Write down something stressful that happened today in the box below e.g. getting stuck in traffic, arguing with a friend, meeting a deadline",
+                                                        "title": "What happened?",
+                                                        "type": "free-text"
+                                    },
+                                                    {
+                                                        "choices": [{
+                                                                "choice": "Withdrew from other people",
+                                                                "detail": "Withdrew from other people"
+                                        },
+                                                            {
+                                                                "choice": "Blamed yourself",
+                                                                "detail": "Blamed yourself"
+                                        },
+                                                            {
+                                                                "choice": "Ate too much",
+                                                                "detail": "Ate too much"
+                                        },
+                                                            {
+                                                                "choice": "Ate too little",
+                                                                "detail": "Ate too little"
+                                        },
+                                                            {
+                                                                "choice": "Felt like you weren't good enough",
+                                                                "detail": "Felt like you weren't good enough"
+                                        },
+                                                            {
+                                                                "choice": "Stayed up late",
+                                                                "detail": "Stayed up late"
+                                        },
+                                                            {
+                                                                "choice": "Cried",
+                                                                "detail": "Cried"
+                                        },
+                                                            {
+                                                                "choice": "Felt annoyed that things didn't go perfectly",
+                                                                "detail": "Felt annoyed that things didn't go perfectly"
+                                        },
+                                                            {
+                                                                "choice": "Smoked, drank, or took drugs",
+                                                                "detail": "Smoked, drank, or took drugs"
+                                        },
+                                                            {
+                                                                "choice": "Snapped at friends or family",
+                                                                "detail": "Snapped at friends or family"
+                                        },
+                                                            {
+                                                                "choice": "Felt like everything was going wrong",
+                                                                "detail": "Felt like everything was going wrong"
+                                        },
+                                                            {
+                                                                "choice": "Clenched jaw or fist",
+                                                                "detail": "Clenched jaw or fist"
+                                        },
+                                                            {
+                                                                "choice": "Worried about what other people thought",
+                                                                "detail": "Worried about what other people thought"
+                                        },
+                                                            {
+                                                                "choice": "Avoided things",
+                                                                "detail": "Avoided things"
+                                        },
+                                                            {
+                                                                "choice": "Thought that things would never get better",
+                                                                "detail": "Thought that things would never get better"
+                                        },
+                                                            {
+                                                                "choice": "None of the above",
+                                                                "detail": "None of the above"
+                                        }],
+                                                        "question_id": "question2",
+                                                        "text": "We've listed some common reactions that people have.  Tick the box to add them to your list",
+                                                        "title": "How did you react?",
+                                                        "type": "multiple-choice"
+                                    },
+                                                    {
+                                                        "footerText": "You can use the enjoyable moments and positive thinking tools to remind you of good things you can do instead.",
+                                                        "question_id": "question3",
+                                                        "text": "Did you react in any other ways not on our list?",
+                                                        "title": "How did you react?",
+                                                        "type": "free-text"
+                                    }]
+                                            },
+                                            "id": "MyDailyReactionsYourReactions",
+                                            "label": "My Daily Reactions - Your Reactions",
+                                            "type": "survey"
+                            }]
+                                },
+                                "id": "MyDailyReactions",
+                                "label": "My Daily Reactions",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p><b>Doing everyday things that we enjoy can help us to feel good</b>.  Making a list of things that we like to do can remind us to do them.<br/><br/>It can <b>make you more aware of the enjoyable moments in your life</b>.<br/><br/>It can <b>show you when you have stopped doing the things you enjoy</b>.  This can often happen when we are feeling down or tired.<br/><br/>Having <b>a ready-made list of ideas makes it easier to plan</b> to do more of the things you enjoy.<br/><br/><b>Click 'next'</b> to make your list.</p>",
+                                                "title": "Enjoyable Moments",
+                                                "type": 1
+                                            },
+                                            "id": "AboutEnjoyableMoments",
+                                            "label": "About Enjoyable Moments",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "editPlanner": "EnjoyPlanner",
+                                                "feedback": {
+                                                    "text": "<p><b>Today</b> you've done $EnjoyableMomentsPlansReviewlastScore things things you enjoy.<br/><br/><b>Since you started using HealthyMind</b> you've done $EnjoyableMomentsPlansReviewemTotalScore things you enjoy .</p>",
+                                                    "title": "Feedback",
+                                                    "type": 1
+                                                },
+                                                "headerText": "Tick the things you've enjoyed today",
+                                                "title": "Things I enjoy",
+                                                "type": "multiple-choice"
+                                            },
+                                            "navCondition": {
+                                                "op": "=",
+                                                "varA": "EnjoyPlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "EnjoyableMomentsPlansReview",
+                                            "label": "Enjoyable Moments Plans Review",
+                                            "type": "planner_review"
+                            },
+                                        {
+                                            "content": {
+                                                "type": "multiple-choice",
+                                                "title": "Create your list",
+                                                "maxPlans": 11,
+                                                "headerText": "We've included some common things that other people like doing.  Tick the box to add them to your list.",
+                                                "options": ["Listen to the radio or music",
+                                    "Watch TV",
+                                    "Play computer games",
+                                    "Gardening",
+                                    "Cleaning",
+                                    "Have a bath/shower",
+                                    "Cook or eat a nice meal",
+                                    "Compliment or praise someone",
+                                    "Go for a walk or run",
+                                    "Read",
+                                    "Look at your favourite pictures"]
+                                            },
+                                            "postActivity": [{
+                                                "id": "set",
+                                                "function": "set",
+                                                "var": "EnjoyPlannerDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "EnjoyPlannerDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "EnjoyPlanner",
+                                            "label": "Enjoy Planner",
+                                            "type": "planner"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>You can <b>use Healthy Mind to keep track of how often you do the things you enjoy</b> each day.<br/><br/>When you log back into 'enjoyable moments' you'll be able to:<br/><ul><li>See your list of things you like doing</li><li>Tick them off as you do them</li><li>Add new things to your list</li></ul><br/> </p>",
+                                                "title": "Keep track",
+                                                "type": 1
+                                            },
+                                            "postActivity": [{
+                                                "id": "16",
+                                                "function": "set",
+                                                "var": "EnjoyPlannerBackInfoDone",
+                                                "value": "1"
+                                }],
+                                            "navCondition": {
+                                                "op": "!=",
+                                                "varA": "EnjoyPlannerBackInfoDone",
+                                                "varB": "1"
+                                            },
+                                            "id": "EnjoyPlannerbackinfo",
+                                            "label": "Enjoy Info",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "Enjoyable Moments",
+                                "label": "Enjoyable Moments",
+                                "type": "sequence",
+                                "tracked": 1
+                    },
+                            {
+                                "content": {
+                                    "items": [{
+                                            "content": {
+                                                "text": "<p>Self-kindness means <b>treating yourself with the same care, understanding, and acceptance that you would show to a close friend</b>.<br/><br/>Giving yourself a hard time or blaming yourself for your problems can make you feel even more stressed or down.<br/><br/>Taking time to recognise how you are feeling in a moment of stress and then offering yourself comfort <b>can help to clear your mind</b>.<br/><br/>This <b>can help you to feel calm and gives you space to notice the good things in your life too</b>.<br/><br/>It's OK to be kind to yourself - you're not being selfish or letting yourself get away with things.  <b>You are accepting that it's normal to make mistakes and be less than perfect</b>.<br/><br/><b>Click 'next'</b> to find out how you can be kinder to yourself.</p>",
+                                                "title": "Self Kindness",
+                                                "type": 1
+                                            },
+                                            "id": "SelfKindnessDesciption",
+                                            "label": "Self Kindness - Description",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>How you can be kinder to yourself.<br/><br/><b>Talking to friends</b> about your problems can be helpful.  It can <b>feel good</b> just to <b>be in the company of a supportive friend</b> who cares about how you feel - even if there's nothing they can do to help.<br/><br/>But friends are not always around to talk to and it's <b>difficult to be a friend to yourself</b>.  That's why it can be helpful to imagine being with your friends using these three simple steps:<br/><ol><li><b>Sit comfortably and quietly</b> for a few minutes<ul><li>Imagine that you are sitting with your closest friend</li></ul></li><li><b>Think about how your friend treats you</b><ul><li>Do they care about how you feel?</li><li>What do they say to you when you're feeling stressed or down?</li><li>How do they help you when you're feeling stressed or down?</li></ul></li><li><b>Think about how you treat yourself</b><ul><li>Do YOU care about how you feel right now?</li><li>Do YOU say to yourself the kind and supportive things your friends would say?</li><li>Do YOU do the helpful things your friends would do?</li></ul></li></ol><br/>Taking time to imagine being with your friends can help to <b>show you the different ways you could be kinder and more supportive to yourself</b>. This <b>makes it easier for you to support yourself</b> when you're not feeling too great.<br/><br/>You may not notice feeling any different straight away after doing this.  But <b>doing this regularly lets your mind know that you care how it feels</b>.  This will help you to feel better when you're feeling stressed.<br/><br/><b>Click 'next'</b> to try out another way of being kind to yourself.</p>",
+                                                "title": "Try it out",
+                                                "type": 1
+                                            },
+                                            "id": "Self Kindness - Try it out",
+                                            "label": "Self Kindness - Try it out",
+                                            "type": "info"
+                            },
+                                        {
+                                            "content": {
+                                                "text": "<p>How you can give yourself a break from feeling stressed.<br/><br/><ol><li>Take a <b>couple of minutes break</b> from whatever you are doing<ul><li>Sit comfortably, relax, and close your eyes</li><li><b>Notice any unpleasant or uncomfortable sensations</b></li><li>Don't judge yourself or feel bad for anything you notice</li><li><b>Allow yourself to accept how you feel</b> - stressed, down, tense, in pain</li></ul></li><li><b>Think about other people who may be feeling the same things as you</b><ul><li><b>You are not alone</b> - right at this moment lots of other people feel exactly the same as you</li><li>Feeling stressed is part of being human</li></ul></li><li><b>Give yourself some kind and supportive words</b><ul><li>You don't need to punish or blame yourself when life gets tough</li><li>Care for yourself and treat yourself kindly when you're feeling stressed - <b>how would you help a close friend who was feeling the same way?</b></li></ul></li></ol><br/>Take a couple of moments to open your eyes and bring your attention back to where you're sitting.<br/><br/> </p>",
+                                                "title": "Try it out",
+                                                "type": 1
+                                            },
+                                            "id": "Self Kindness - Try it out 1",
+                                            "label": "Self Kindness - Try it out",
+                                            "type": "info"
+                            }]
+                                },
+                                "id": "Self Kindness",
+                                "label": "Self Kindness",
+                                "type": "sequence",
+                                "tracked": 1
+                    }]
+                    }
+            }]
+        },
+        "label": "HealthyMind",
+        "type": "menu"
+    }],
+    "functionPool": {
+
+    },
+    "modelVersion": 2,
+    "triggers": []
+}

@@ -407,7 +407,9 @@ apiRoutes.route('/intervention/:intervention_id')
 
 // Get the intervention with this id (accessed at GET http://localhost:8080/api/intervetnion/:intervention_id)
 .get(function (req, res) {
-    Intervention.findById(req.params.intervention_id, function (err, intervention) {
+    Intervention.find({
+        key: req.params.intervention_id
+    }, function (err, intervention) {
         if (err)
             res.send(err);
         res.json(intervention);
@@ -423,7 +425,7 @@ apiRoutes.route('/intervention/:intervention_id')
         if (err)
             res.send(err);
 
-        intervention.name = req.body.name; // update the intervention info
+        intervention.name = req.body.name; // update the intervention name
 
         // save the intervention
         intervention.save(function (err) {

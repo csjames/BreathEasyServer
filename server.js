@@ -405,7 +405,7 @@ apiRoutes.get('/interventions', function (req, res) {
 // CRUD Routes  (GET http://localhost:8080/api/intervention)
 apiRoutes.route('/intervention/:intervention_id')
 
-// Get the intervention with this id (accessed at GET http://localhost:8080/api/intervetnion/:intervention_id)
+// Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)
 .get(function (req, res) {
     Intervention.find({
         key: req.params.intervention_id
@@ -416,10 +416,10 @@ apiRoutes.route('/intervention/:intervention_id')
     });
 })
 
-// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervetnion/:intervention_id)
+// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
 .put(function (req, res) {
 
-    // use our bear model to find the intervention we want
+    // use the intervention model to find the intervention we want
     Intervention.findById(req.params.intervention_id, function (err, intervention) {
 
         if (err)
@@ -440,11 +440,11 @@ apiRoutes.route('/intervention/:intervention_id')
     });
 })
 
-// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervetnion/:intervention_id)
+// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
 .delete(function (req, res) {
     Intervention.remove({
-        _id: req.params.intervention_id
-    }, function (err, bear) {
+        key: req.params.intervention_id
+    }, function (err, intervention) {
         if (err)
             res.send(err);
 

@@ -93,7 +93,7 @@
                     <div class="col-xs-offset-2 col-xs-10">
                         <button type="submit" ng-click="smCtrl.loginUser(smCtrl.user)" class="btn btn-primary btn-med">Login</button>
                     </div>
-                    <label><font color="red">{{smCtrl.customError}}</font></label>
+                    <div id="loginFeedback"></div>
                     <div class="col-xs-offset-2 col-xs-10">
                         <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe" disabled> Remember me
                     </div>
@@ -110,7 +110,7 @@
 
         <div id="register" class="container vertical-center">
             <div class="jumbotron">
-                <form name="registration" action="api/signup" method="post" accept-charset="utf-8">
+                <ng-form name="registration" class="form-horizontal">
                     <h2>Registration Form</h2>
                     <div class="form-group row">
                         <label for="name" class="col-md-2 col-form-label">Name</label>
@@ -154,10 +154,11 @@
                             <input class="form-control" type="text" name="location" placeholder="enter your city/town" ng-model="smCtrl.newuser.location" id="location">
                         </div>
                     </div>
+                    <div id="registrationFeedback"></div>
                     <div class="col-md-offset-2 col-md-2">
                         <button type="submit" ng-click="smCtrl.registerUser(smCtrl.newuser)" class="btn btn-primary btn-med">Register</button>
                     </div>
-                </form>
+                </ng-form>
                 <div class="btn-group btn-group-justified">
 
                 </div>
@@ -190,18 +191,25 @@
                 <h2>Dashboard</h2>
 
                 <div ng-show="smCtrl.checkAuthentication()">
+                    <div id="dashboardFeedback"></div>
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table id="myTable" class="table table-striped table-bordered">
                             <thead class="thead-inverse">
                                 <tr>
                                     <th>#</th>
                                     <th>Intervention ID</th>
+                                    <th>Version</th>
+                                    <th>Delete Intervention</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="intervention in smCtrl.interventionList.data">
                                     <td>{{$index + 1}}</td>
                                     <td>{{intervention.key}}</td>
+                                    <td>{{intervention.version}}</td>
+                                    <td>
+                                        <input type="button" class="btn btn-primary btn-med" value="Delete" ng-click="smCtrl.deleteRow(intervention.key)">
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -211,6 +219,10 @@
                         <label for="interventionName" class="col-md-1 control-label">ID</label>
                         <div class="col-md-3">
                             <input type="text" id="interventionName" ng-model="smCtrl.interventionID" class="form-control" placeholder="Intervention ID" />
+                        </div>
+                        <label for="interventionVersion" class="col-md-1 control-label">Version</label>
+                        <div class="col-md-3">
+                            <input type="text" id="interventionVersion" ng-model="smCtrl.interventionVersion" class="form-control" placeholder="version" />
                         </div>
                         <div class="col-md-4">
                             <input type="file" id="file" class="form-control" />
@@ -252,9 +264,9 @@
                     var vm = this;
                     vm.user = {};
                     vm.newuser = {};
-                    vm.customError = null;
                     vm.fileData = {};
-                    vm.interventionID = null;
+                    vm.interventionID = {};
+                    vm.interventionVersion = {};
                     var interventionContent = {};
                     var API_ENDPOINT = 'http://localhost:8080/api';
 
@@ -265,14 +277,17 @@
                     };
 
                     var parseInterventions = function () {
-
                         $http.get(API_ENDPOINT + '/interventions').then(function (result) {
-                            //vm.memberinfo = result.data.msg;
-                            console.log(result.data.msg);
+                            console.log(result.data);
                             vm.interventionList = result;
                         });
-
                     };
+
+                    vm.deleteRow = function (interventionID) {
+                        $http.delete(API_ENDPOINT + '/intervention/:' + interventionID).then(function (result) {
+                            document.getElementById("dashboardFeedback").innerHTML = 'result.data.msg';
+                        });
+                    }
 
                     parseInterventions();
 
@@ -331,7 +346,6 @@
                     //});
 
                     vm.loginUser = function (user) {
-                        console.log('called from html');
                         AuthService.loginUser(user);
                     };
 
@@ -341,6 +355,7 @@
 
                     vm.logoutUser = function () {
                         AuthService.logout();
+                        document.getElementById("loginFeedback").innerHTML = '';
                     };
 
 
@@ -370,6 +385,7 @@
                         $http.post(API_ENDPOINT + '/saveintervention', data).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
+
                             } else {
                                 reject(result.data.msg);
                             }
@@ -408,59 +424,40 @@
                                 storeUserCredentials(result.data.token);
                                 console.log(result.data.token);
                                 resolve(result.data.msg);
+                                document.getElementById("loginFeedback").innerHTML = 'Logged in as ' + user.username;
 
                                 setTimeout(function () {
                                     console.log('parse interventions');
                                     accessSecureArea();
                                 }, 1000);
 
-
                             } else {
                                 reject(result.data.msg);
-                                console.log(result.data.msg + user);
-                                console.dir(user);
-
+                                document.getElementById("loginFeedback").innerHTML = result.data.msg;
                             }
                         });
                     });
                 }
 
-
-
                 var accessSecureArea = function () {
-                    //var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-                    // Set the token as header for your requests!
-                    //$http.defaults.headers.common['X-Auth-Token'] = token;
-
                     $http.get(API_ENDPOINT + '/dashboard').then(function (result) {
-                        //vm.memberinfo = result.data.msg;
                         console.log(result.data.msg);
                     });
-
-                    /*
-                    $http({
-                        url: API_ENDPOINT + '/dashboard',
-                        method: 'get',
-                        headers: {
-                            'x-access-token': token
-                        }
-                    }).then(function (result) {
-                        vm.memberinfo = result.data.msg;
-                        console.log(resul.data.msg);
-                    }); */
                 };
 
                 function registerUser(user) {
                     return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT.url + '/signup', user).then(function (result) {
+                        $http.post('http://localhost:8080/api/signup', user).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
+                                document.getElementById("registrationFeedback").innerHTML = result.data.msg;
                             } else {
                                 reject(result.data.msg);
+                                document.getElementById("registrationFeedback").innerHTML = result.data.msg;
                             }
                         });
                     });
-                };
+                }
 
                 function storeUserCredentials(token) {
                     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);

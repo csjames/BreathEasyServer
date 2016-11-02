@@ -285,7 +285,9 @@
 
                     vm.deleteRow = function (interventionID) {
                         $http.delete(API_ENDPOINT + '/intervention/:' + interventionID).then(function (result) {
-                            document.getElementById("dashboardFeedback").innerHTML = 'result.data.msg';
+                            document.getElementById("dashboardFeedback").innerHTML = result.data.msg;
+                        }, function (result) {
+                            document.getElementById("dashboardFeedback").innerHTML = result.data.msg;
                         });
                     }
 

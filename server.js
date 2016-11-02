@@ -13,7 +13,7 @@
  **************************************************************************** */
 
 // =======================
-// get the packages we need ============
+// get the packages needed ============
 // =======================
 var express = require('express'); // A web application framework with features for web and mobile apps
 var app = express();
@@ -355,7 +355,7 @@ apiRoutes.get('/dashboard', passport.authenticate('jwt', {
                 //nest a method to get all inteventions and send them to the user
                 res.json({
                     success: true,
-                    msg: 'Welcome in the member area ' + user.name + '!'
+                    msg: 'Welcome in the dashboard area ' + user.name + '!'
                 });
             }
         });

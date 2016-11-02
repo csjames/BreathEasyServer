@@ -204,6 +204,7 @@ apiRoutes.post('/authenticate', function (req, res) {
                 if (isMatch && !err) {
                     // if user is found and password is right create a token
                     var token = jwt.encode(user, config.secret);
+                    var interventionID = user.interventionID;
 
                     // This JWT is using a different jwt library than the example
                     // Respond to a successful authntication attempt with a JWT token
@@ -226,7 +227,8 @@ apiRoutes.post('/authenticate', function (req, res) {
                     // return the information including token as JSON
                     res.json({
                         success: true,
-                        token: 'JWT ' + token
+                        token: 'JWT ' + token,
+                        interventionID: interventionID
                     });
 
                 } else {
@@ -311,6 +313,7 @@ apiRoutes.post('/signup', function (req, res) {
             surname: req.body.surname,
             username: req.body.username,
             password: req.body.password,
+            interventionID: req.body.interventionID,
             email: req.body.email,
             tel: req.body.tel,
             location: req.body.location

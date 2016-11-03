@@ -391,6 +391,42 @@ apiRoutes.get('/', function (req, res) {
     });
 });
 
+apiRoutes.get('/userss', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
+    var token = getToken(req.headers);
+    if (token) {
+        var decoded = jwt.decode(token, config.secret);
+        User.findOne({
+            name: decoded.name
+        }, function (err, user) {
+            if (err) throw err;
+
+            if (!user) {
+                return res.status(403).send({
+                    success: false,
+                    msg: 'Authentication failed. User not found.'
+                });
+            } else {
+                //nest a method to get all inteventions and send them to the user
+                User.find({}, function (err, users) {
+                    res.json({
+                        success: true,
+                        msg: 'Welcome in the dashboard area ' + user.name + '!',
+                        data: users
+                    });
+                });
+
+            }
+        });
+    } else {
+        return res.status(403).send({
+            success: false,
+            msg: 'No token provided.'
+        });
+    }
+});
+
 // route to return all users (GET http://localhost:8080/api/users)
 apiRoutes.get('/users', function (req, res) {
     User.find({}, function (err, users) {
@@ -405,7 +441,59 @@ apiRoutes.get('/interventions', function (req, res) {
     });
 });
 
-// CRUD Routes  (GET http://localhost:8080/api/intervention)
+// CRUD Routes user (GET http://localhost:8080/api/user)
+apiRoutes.route('/user/:username')
+
+// Get the user with this username (accessed at GET http://localhost:8080/api/user/:username)
+.get(function (req, res) {
+    User.find({
+        username: req.params.username
+    }, function (err, user) {
+        if (err)
+            res.send(err);
+        res.json(user);
+    });
+})
+
+// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
+.put(function (req, res) {
+
+    // use the intervention model to find the intervention we want
+    User.findById(req.params.username, function (err, user) {
+
+        if (err)
+            res.send(err);
+
+        user.name = req.body.name; // update the user name
+
+        // save the user entry
+        user.save(function (err) {
+            if (err)
+                res.send(err);
+
+            res.json({
+                message: 'user details updated!'
+            });
+        });
+
+    });
+})
+
+// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
+.delete(function (req, res) {
+    User.remove({
+        username: req.params.username
+    }, function (err, user) {
+        if (err)
+            res.send(err);
+
+        res.json({
+            message: 'User successfully deleted'
+        });
+    });
+});
+
+// CRUD Routes for intervention (GET http://localhost:8080/api/intervention)
 apiRoutes.route('/intervention/:intervention_id')
 
 // Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)

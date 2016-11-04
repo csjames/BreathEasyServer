@@ -280,7 +280,9 @@ apiRoutes.post('/saveintervention', function (req, res) {
         });
     } else {
         var newIntervention = new Intervention({
+            name: req.body.name,
             key: req.body.key,
+            description: req.body.description,
             data: req.body.data
         });
         // save the user
@@ -533,14 +535,14 @@ apiRoutes.route('/intervention/:intervention_id')
 
 // Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
 .delete(function (req, res) {
-    Intervention.remove({
+    Intervention.findOneAndRemove({
         key: req.params.intervention_id
     }, function (err, intervention) {
         if (err)
             res.send(err);
 
         res.json({
-            message: 'Intervention successfully deleted'
+            message: 'Intervention ' + intervention + 'intervention send' + req.params.intervention_id + ' successfully deleted'
         });
     });
 });

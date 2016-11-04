@@ -25,6 +25,7 @@ var InterventionSchema = new Schema({
         required: true,
         unique: true
     },
+    description: String,
     data: Schema.Types.Object
 });
 

@@ -29,7 +29,7 @@
         }
 
         .table-responsive {
-            height: 600px !important;
+            height: 500px !important;
             overflow: scroll;
         }
     </style>
@@ -175,19 +175,18 @@
             <div class="jumbotron text-left">
                 <h2 name="about">About LifeGuide Toolbox</h2>
                 <p class="text-justify">
-                    The LifeGuide research programme is a multidisciplinary initiative led by Professor Lucy Yardley (Psychology) and Dr Mark Weal (Computer Science) at the University of Southampton.
+                    The LifeGuide intervention author management tool enables researchers to optimise their interventions prior to deployment in the Google Play or Apple Store digital distribution services as well as other platforms.
+                </p>
+                <h3>Important About Information you Enter</h3>
+                <p class="text-justify">
+                    Please create an account by clicking on the sign up link at the top right of your screen and provide some required information, since this is for testing interventions and fellow intervention authors and developers will be able to view this information, <strong>it is crusial to treat the site as NOT secure for your personal information.</strong> So please do not to provide with any real personal information and create users that do not include any real user information.
+                </p>
+                <h3>How to Test an Intervention</h3>
+                <p class="text-justify">
+                    To use the tool you simply add your intervention (upload in JSON format) and make sure you remember the intervention ID. In the LifeGuide app (web vesrion) please register a user and in the user's intervention ID put the ID of the intervention you want to test. When you login with that specific user the the system will lookup the intervention with that ID and the intervention will be loaded. If you want to make changes to your intervention just delete the intervention and then add the updated version using the same intervention ID (the intervention ID is unique and you can not have 2 itnervention with the same ID).
                 </p>
                 <p class="text-justify">
-                    We have developed a unique set of open source software tools, the ‘LifeGuide’, that allows intervention designers with no experience of programming to create interactive web-based interventions to support healthy behaviour.
-                </p>
-                <p class="text-justify">
-                    Using this software platform, we have been developing and successfully trialling numerous interventions for PC, tablet and smart phone, including public health interventions (e.g. for weight management, physical activity support, hand hygiene, smoking cessation) and illness management interventions (e.g. for hypertension, diabetes, cancer, back pain, dizziness, fatigue, stress, stroke, respiratory conditions, eczema and irritable bowel).
-                </p>
-                <p class="text-justify">
-                    Our interventions are now being disseminated in the UK and internationally by the NHS, public health teams and education websites for health professionals.
-                </p>
-                <p class="text-justify">
-                    For more information please click <a href="https://www.lifeguideonline.org" target="_blank">here</a>.
+                    For more information on the general LifeGuide project please click <a href="https://www.lifeguideonline.org" target="_blank">here</a>.
                 </p>
             </div>
         </div>
@@ -208,6 +207,9 @@
                         <div id="interventions" class="tab-pane fade in active">
                             <h3>All Interventions</h3>
                             <div id="interventionFeedback"></div>
+                            <label>Search:
+                                <input ng-model="searchText">
+                            </label>
                             <div class="table-responsive">
                                 <table id="interventionTable" class="table table-striped table-bordered">
                                     <thead class="thead-inverse">
@@ -220,7 +222,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="intervention in smCtrl.interventionList.data">
+                                        <tr ng-repeat="intervention in smCtrl.interventionList.data | filter:searchText">
                                             <td>{{$index + 1}}</td>
                                             <td>{{intervention.name}}</td>
                                             <td>{{intervention.key}}</td>
@@ -236,7 +238,7 @@
                             <div class="form-group row">
                                 <label for="interventionName" class="col-md-1 control-label">Name</label>
                                 <div class="col-md-3">
-                                    <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="Name" />
+                                    <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
                                 </div>
                                 <label for="interventionID" class="col-md-1 control-label">ID</label>
                                 <div class="col-md-3">
@@ -249,10 +251,11 @@
                                 <div class="col-md-4">
                                     <input type="file" id="file" class="form-control" />
                                 </div>
+                            </div>
+                            <div class="form-group row">
                                 <div>
                                     <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Add Intervention</button>
                                 </div>
-
                             </div>
                         </div>
 
@@ -349,6 +352,7 @@
                     vm.deleteIntervention = function (interventionID) {
                         $http.delete(API_ENDPOINT + '/intervention/:' + interventionID).then(function (result) {
                             document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                            parseInterventions();
                         }, function (result) {
                             document.getElementById("interventionFeedback").innerHTML = result.data.msg;
                         });
@@ -357,6 +361,7 @@
                     vm.deleteUser = function (username) {
                         $http.delete(API_ENDPOINT + '/user/:' + username).then(function (result) {
                             document.getElementById("userFeedback").innerHTML = result.data.msg;
+                            parseUsers();
                         }, function (result) {
                             document.getElementById("userFeedback").innerHTML = result.data.msg;
                         });

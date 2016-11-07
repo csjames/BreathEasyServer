@@ -483,8 +483,8 @@ apiRoutes.route('/user/:username')
 
 // Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
 .delete(function (req, res) {
-    User.remove({
-        username: req.params.username
+    User.findOneAndRemove({
+        username: req.params.username.slice(1)
     }, function (err, user) {
         if (err)
             res.send(err);
@@ -536,13 +536,13 @@ apiRoutes.route('/intervention/:intervention_id')
 // Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
 .delete(function (req, res) {
     Intervention.findOneAndRemove({
-        key: req.params.intervention_id
+        key: req.params.intervention_id.slice(1)
     }, function (err, intervention) {
         if (err)
             res.send(err);
 
         res.json({
-            message: 'Intervention ' + intervention + 'intervention send' + req.params.intervention_id + ' successfully deleted'
+            message: 'Intervention successfully deleted'
         });
     });
 });

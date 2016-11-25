@@ -30,7 +30,6 @@ var AuthorSchema = new Schema({
         type: String,
         required: true
     },
-    admin: Boolean,
     email: String,
     tel: Number,
     location: String,

@@ -55,8 +55,8 @@ var healthyMind = JSON.parse(fs.readFileSync('resources/healthymind.json', 'utf8
 // =======================
 // configuration =========
 // =======================
-var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
-var httpsport = 8443;
+var port = process.env.PORT || 8443; // used to create, sign, and verify tokens
+var httpsport = 8080; // https port
 mongoose.connect(config.database); // connect to database
 
 var credentials = {
@@ -518,7 +518,7 @@ apiRoutes.route('/intervention/:intervention_id')
         if (err)
             res.send(err);
 
-        intervention.name = req.body.name; // update the intervention name
+        intervention.data = req.body.newIntervention; // update the intervention data
 
         // save the intervention
         intervention.save(function (err) {

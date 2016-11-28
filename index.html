@@ -211,7 +211,6 @@
                             <label>Search:
                                 <input ng-model="searchText">
                             </label>
-                            <li><a href="#addIntervention"><span class="glyphicon glyphicon-plus"></span> Click to add your intervention</a></li>
                             <div class="table-responsive">
                                 <table id="interventionTable" class="table table-striped table-bordered">
                                     <thead class="thead-inverse">
@@ -240,29 +239,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <a href="#addIntervention"><span class="glyphicon glyphicon-plus"></span> Add new intervention</a>
 
-                            <div class="form-group row">
-                                <label for="interventionName" class="col-md-1 control-label">Name</label>
-                                <div class="col-md-3">
-                                    <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
-                                </div>
-                                <label for="interventionID" class="col-md-1 control-label">ID</label>
-                                <div class="col-md-3">
-                                    <input type="text" id="interventionID" ng-model="smCtrl.interventionID" class="form-control" placeholder="id" />
-                                </div>
-                                <label for="description" class="col-md-1 control-label">Description</label>
-                                <div class="col-md-3">
-                                    <input type="text" id="description" ng-model="smCtrl.description" class="form-control" placeholder="description" />
-                                </div>
-                                <div class="col-md-4">
-                                    <input type="file" id="file" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div>
-                                    <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Add Intervention</button>
-                                </div>
-                            </div>
                         </div>
 
                         <div id="users" class="tab-pane fade">
@@ -316,31 +294,44 @@
 
     <div id="addIntervention" class="container vertical-center">
         <div class="jumbotron text-center">
-            <h2>Add your intervention here</h2>
+            <h2>Add Interventions Details</h2>
             <p class="text-justify">
-                If you want to sign back in please click.
+                <div id="interventionFeedback"></div>
             </p>
-            <div class="form-group row">
-                <label for="interventionName" class="col-md-1 control-label">Name</label>
-                <div class="col-md-3">
-                    <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    <label for="interventionName" class="col-md-2 col-form-label">Name</label>
+                    <div class="col-md-5">
+                        <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
+                    </div>
                 </div>
-                <label for="interventionID" class="col-md-1 control-label">ID</label>
-                <div class="col-md-3">
-                    <input type="text" id="interventionID" ng-model="smCtrl.interventionID" class="form-control" placeholder="id" />
+                <div class="form-group row">
+                    <label for="interventionID" class="col-md-2 col-form-label">ID</label>
+                    <div class="col-md-5">
+                        <input type="text" id="interventionID" ng-model="smCtrl.interventionID" class="form-control" placeholder="id" />
+                    </div>
                 </div>
-                <label for="description" class="col-md-1 control-label">Description</label>
-                <div class="col-md-3">
-                    <input type="text" id="description" ng-model="smCtrl.description" class="form-control" placeholder="description" />
+                <div class="form-group row">
+                    <label for="description" class="col-md-2 col-form-label">Description</label>
+                    <div class="col-md-5">
+                        <textarea id="description" rows="3" ng-model="smCtrl.description" class="form-control" placeholder="description"> </textarea>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <input type="file" id="file" class="form-control" />
+                <div class="form-group row">
+                    <label for="file" class="col-md-2 col-form-label">Select File</label>
+                    <div class="col-md-5">
+                        <input type="file" id="file" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div>
+                        <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Save Intervention</button>
+                    </div>
                 </div>
             </div>
-            <div class="form-group row">
-                <div>
-                    <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Add Intervention</button>
-                </div>
+            <div class="btn-group btn-group-justified">
+
             </div>
         </div>
     </div>

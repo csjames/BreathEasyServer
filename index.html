@@ -90,24 +90,24 @@
                     <h2>Please enter your login information</h2>
                     <div id="loginFeedback"></div>
                     <div class="form-group">
-                        <label for="username" class="control-label col-xs-2">Username</label>
-                        <div class="col-xs-10">
+                        <label for="username" class="control-label col-md-2">Username</label>
+                        <div class="col-md-2">
                             <input type="text" maxlength="20" name="username" placeholder="username" ng-model="smCtrl.user.username" id="username" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="control-label col-xs-2">Password</label>
-                        <div class="col-xs-10">
+                        <label for="password" class="control-label col-md-2">Password</label>
+                        <div class="col-md-2">
                             <input type="password" maxlength="20" name="password" placeholder="password" ng-model="smCtrl.user.password" id="password" required>
                         </div>
                     </div>
-                    <div class="col-xs-offset-2 col-xs-10">
+                    <div class="col-md-offset-2 col-md-2">
                         <button type="submit" id="submit" class="btn btn-primary btn-med">Login</button>
                     </div>
                 </form>
                 <div class="btn-group btn-group-justified">
                     <form name="forgotenpassword" action="api/users" method="get" accept-charset="utf-8">
-                        <div class="col-xs-offset-2 col-xs-10">
+                        <div class="col-md-offset-2 col-md-2">
                             <button type="submit" class="btn btn-primary btn-med" disabled>Forgoten Password</button>
                         </div>
                     </form>
@@ -233,7 +233,7 @@
                                                 <input type="button" class="btn btn-danger btn-med" value="Delete" ng-click="smCtrl.deleteIntervention(intervention.key)">
                                             </td>
                                             <td>
-                                                <input type="button" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key)">
+                                                <input type="button" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key, intervention.data)">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -330,7 +330,6 @@
                     </div>
                 </div>
                 <div class="btn-group btn-group-justified">
-
                 </div>
             </div>
         </div>
@@ -388,8 +387,8 @@
                         });
                     };
 
-                    vm.updateIntervention = function (interventionID) {
-                        $http.put(API_ENDPOINT + '/intervention/:' + interventionID).then(function (result) {
+                    vm.updateIntervention = function (interventionID, data) {
+                        $http.put(API_ENDPOINT + '/intervention/:' + interventionID, data).then(function (result) {
                             document.getElementById("interventionFeedback").innerHTML = result.data.msg;
                             parseInterventions();
                         }, function (result) {

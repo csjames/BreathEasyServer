@@ -252,10 +252,12 @@ apiRoutes.post('/store', function (req, res) {
         });
     } else {
         var newDataEntry = new DataEntry({
+            user: req.body.userid,
+            intervention: req.body.interventionid,
             key: req.body.key,
             data: req.body.data
         });
-        // save the user
+        // save the user data
         newDataEntry.save(function (err) {
             if (err) {
                 return res.json({
@@ -382,8 +384,8 @@ var getToken = function (headers) {
     }
 };
 
-// TODO: One of the option is to implement a route middleware to verify a token and will not allow
-// for access to other routes unless a user is authenticated, please note that the order of the routes
+// TODO: One possible option is to implement a middleware route to verify a token that will not allow
+// access to other routes unless a user token is authenticated, please note that the order of the routes
 // determines what can be accessed with and without authentication
 
 // route to show a random message (GET http://localhost:8080/api/)
@@ -481,7 +483,7 @@ apiRoutes.route('/user/:username')
     });
 })
 
-// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
+// Delete the uesr with this id (accessed at DELETE http://localhost:8080/api/intervention/:user_id)
 .delete(function (req, res) {
     User.findOneAndRemove({
         username: req.params.username.slice(1)
@@ -513,12 +515,14 @@ apiRoutes.route('/intervention/:intervention_id')
 .put(function (req, res) {
 
     // use the intervention model to find the intervention we want
-    Intervention.findById(req.params.intervention_id, function (err, intervention) {
+    Intervention.find({
+        key: req.params.intervention_id
+    }, function (err, intervention) {
 
         if (err)
             res.send(err);
 
-        intervention.data = req.body.newIntervention; // update the intervention data
+        intervention.data = req.body.data; // update the intervention data
 
         // save the intervention
         intervention.save(function (err) {

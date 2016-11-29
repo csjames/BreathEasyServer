@@ -230,7 +230,7 @@
                                             <td>{{intervention.key}}</td>
                                             <td>{{intervention.description}}</td>
                                             <td>
-                                                <input type="button" class="btn btn-primary btn-med" value="Delete" ng-click="smCtrl.deleteIntervention(intervention.key)">
+                                                <input type="button" class="btn btn-danger btn-med" value="Delete" ng-click="smCtrl.deleteIntervention(intervention.key)">
                                             </td>
                                             <td>
                                                 <input type="button" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key)">
@@ -266,7 +266,7 @@
                                             <td>{{user.username}}</td>
                                             <td>{{user.interventionID}}</td>
                                             <td>
-                                                <input type="button" class="btn btn-primary btn-med" value="Delete" ng-click="smCtrl.deleteUser(user.username)">
+                                                <input type="button" class="btn btn-danger btn-med" value="Delete" ng-click="smCtrl.deleteUser(user.username)">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -281,62 +281,61 @@
                 </p>
             </div>
         </div>
-    </div>
 
-    <div id="logout" class="container vertical-center">
-        <div class="jumbotron text-center">
-            <h2>You have successfully logged out.</h2>
-            <p class="text-justify">
-                If you want to sign back in please click <a href="#login">here</a>. If you want to go to the home page please click <a href="#home">here</a>
-            </p>
+        <div id="logout" class="container vertical-center">
+            <div class="jumbotron text-center">
+                <h2>You have successfully logged out.</h2>
+                <p class="text-justify">
+                    If you want to sign back in please click <a href="#login">here</a>. If you want to go to the home page please click <a href="#home">here</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="addIntervention" class="container vertical-center">
+            <div class="jumbotron text-center">
+                <h2>Add Interventions Details</h2>
+                <p class="text-justify">
+                    <div id="interventionFeedback"></div>
+                </p>
+                <div class="form-horizontal">
+                    <div class="form-group row">
+                        <label for="interventionName" class="col-md-2 col-form-label">Name</label>
+                        <div class="col-md-5">
+                            <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="interventionID" class="col-md-2 col-form-label">ID</label>
+                        <div class="col-md-5">
+                            <input type="text" id="interventionID" ng-model="smCtrl.interventionID" class="form-control" placeholder="id" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="description" class="col-md-2 col-form-label">Description</label>
+                        <div class="col-md-5">
+                            <textarea id="description" rows="3" ng-model="smCtrl.description" class="form-control" placeholder="description"> </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="file" class="col-md-2 col-form-label">Select File</label>
+                        <div class="col-md-5">
+                            <input type="file" id="file" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-offset-2 col-md-2">
+                            <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Save Intervention</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group btn-group-justified">
+
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="addIntervention" class="container vertical-center">
-        <div class="jumbotron text-center">
-            <h2>Add Interventions Details</h2>
-            <p class="text-justify">
-                <div id="interventionFeedback"></div>
-            </p>
-            <div class="form-horizontal">
-                <div class="form-group row">
-                    <label for="interventionName" class="col-md-2 col-form-label">Name</label>
-                    <div class="col-md-5">
-                        <input type="text" id="interventionName" ng-model="smCtrl.interventionName" class="form-control" placeholder="name" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="interventionID" class="col-md-2 col-form-label">ID</label>
-                    <div class="col-md-5">
-                        <input type="text" id="interventionID" ng-model="smCtrl.interventionID" class="form-control" placeholder="id" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="description" class="col-md-2 col-form-label">Description</label>
-                    <div class="col-md-5">
-                        <textarea id="description" rows="3" ng-model="smCtrl.description" class="form-control" placeholder="description"> </textarea>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label for="file" class="col-md-2 col-form-label">Select File</label>
-                    <div class="col-md-5">
-                        <input type="file" id="file" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <div>
-                        <button class="btn btn-primary btn-med" ng-click="smCtrl.interventionUpload()">Save Intervention</button>
-                    </div>
-                </div>
-            </div>
-            <div class="btn-group btn-group-justified">
-
-            </div>
-        </div>
-    </div>
-
-    </div>
     <footer class="footer">
         <div class="container">
             <span class="text-muted">&copy; Copyright University of Southampton 2016</span>
@@ -352,7 +351,7 @@
                     vm.user = {};
                     vm.newuser = {};
                     vm.fileData = {};
-                    vm.interventionID = {};
+
                     vm.interventionVersion = {};
                     var interventionContent = {};
                     var API_ENDPOINT = 'https://localhost:8080/api';

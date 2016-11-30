@@ -287,7 +287,7 @@ apiRoutes.post('/saveintervention', function (req, res) {
             description: req.body.description,
             data: req.body.data
         });
-        // save the user
+        // save the new intervention
         newIntervention.save(function (err) {
             if (err) {
                 return res.json({
@@ -412,15 +412,16 @@ apiRoutes.get('/userss', passport.authenticate('jwt', {
                     msg: 'Authentication failed. User not found.'
                 });
             } else {
-                //nest a method to get all inteventions and send them to the user
+                //nest a method to get all users
+                var allusers = {};
                 User.find({}, function (err, users) {
-                    res.json({
-                        success: true,
-                        msg: 'Welcome in the dashboard area ' + user.name + '!',
-                        data: users
-                    });
+                    allusers = users;
                 });
-
+                res.json({
+                    success: true,
+                    msg: 'Request for all users by ' + user.name,
+                    data: allusers
+                });
             }
         });
     } else {
@@ -503,7 +504,7 @@ apiRoutes.route('/intervention/:intervention_id')
 // Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)
 .get(function (req, res) {
     Intervention.find({
-        key: req.params.intervention_id
+        key: req.params.intervention_id.slice(1)
     }, function (err, intervention) {
         if (err)
             res.send(err);
@@ -514,15 +515,19 @@ apiRoutes.route('/intervention/:intervention_id')
 // Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
 .put(function (req, res) {
 
+    console.log("The name of the intervention to update: " + req.params.intervention_id.slice(1));
     // use the intervention model to find the intervention we want
     Intervention.find({
-        key: req.params.intervention_id
+        key: req.params.intervention_id.slice(1)
     }, function (err, intervention) {
 
         if (err)
             res.send(err);
 
-        intervention.data = req.body.data; // update the intervention data
+        console.dir("The given data to update: " + req.body.content);
+
+        intervention.data = req.body.content; // update the intervention data
+        console.dir("The existing data: " + intervention.data);
 
         // save the intervention
         intervention.save(function (err) {

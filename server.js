@@ -503,7 +503,7 @@ apiRoutes.route('/intervention/:intervention_id')
 
 // Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)
 .get(function (req, res) {
-    Intervention.find({
+    Intervention.findOne({
         key: req.params.intervention_id.slice(1)
     }, function (err, intervention) {
         if (err)
@@ -524,7 +524,7 @@ apiRoutes.route('/intervention/:intervention_id')
         if (err)
             res.send(err);
 
-        console.dir("The given data to update: " + req.body.content);
+        console.dir(req.body.content);
 
         intervention.data = req.body.content; // update the intervention data
         console.dir("The existing data: " + intervention.data);

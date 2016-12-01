@@ -26,8 +26,10 @@ var InterventionSchema = new Schema({
         unique: true
     },
     description: String,
-    data: Schema.Types.Object
+    data: Schema.Types.Mixed
 });
+
+//Schema.Types.Object
 
 // on every save, add the date
 InterventionSchema.pre('save', function (next) {

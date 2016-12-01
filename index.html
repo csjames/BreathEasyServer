@@ -32,6 +32,10 @@
             height: 500px !important;
             overflow: scroll;
         }
+
+        #my_file {
+            display: none;
+        }
     </style>
 
 </head>
@@ -246,7 +250,8 @@
                                                 <input type="button" class="btn btn-danger btn-med" value="Delete" ng-click="smCtrl.deleteIntervention(intervention.key)">
                                             </td>
                                             <td>
-                                                <input type="button" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key, intervention.data)">
+                                                <input type="button" id="get_file" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key)">
+                                                <input type="file" id="my_file">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -400,8 +405,29 @@
                         });
                     };
 
-                    vm.updateIntervention = function (interventionID, data) {
-                        $http.put(API_ENDPOINT + '/intervention/:' + interventionID, data).then(function (result) {
+                    vm.updateIntervention = function (interventionID) {
+
+                        var file = {};
+                        setTimeout(function () {
+                            document.getElementById('my_file').click();
+                            file = document.getElementById('my_file').files[0];
+                            console.log(file);
+                        }, 0);
+
+                        //document.getElementById('my_file').click();
+                        //var file = document.getElementById('my_file').files[0];
+                        //console.log(file);
+                        if (file) {
+                            var reader = new FileReader();
+                            reader.onloadend = function (e) {
+                                var fileData = e.target.result;
+                            };
+                            reader.onerror = function (event) {
+                                console.error('File could not be read!' + event.target.error.code);
+                            };
+                        }
+
+                        $http.put(API_ENDPOINT + '/intervention/:' + interventionID, fileData).then(function (result) {
                             document.getElementById("interventionFeedback").innerHTML = result.data.msg;
                             parseInterventions();
                         }, function (result) {

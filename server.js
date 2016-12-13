@@ -13,7 +13,7 @@
  **************************************************************************** */
 
 // =======================
-// get the packages needed ============
+// Import the packages needed
 // =======================
 var express = require('express'); // A web application framework with features for web and mobile apps
 var app = express();
@@ -25,7 +25,6 @@ var nodemailer = require('nodemailer');
 var async = require('async');
 //var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var jwt = require('jwt-simple');
-//var config = require('./config'); // get our config file
 var config = require('./config/database');
 var User = require('./app/models/user'); // get our mongoose model
 var DataEntry = require('./app/models/data');
@@ -38,21 +37,7 @@ var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 var path = require('path'); // A library to serve the index file
 
 // Load local JSON intervention for testing purposes ***** NOT using authentication services
-var jsonModel = JSON.parse(fs.readFileSync('resources/lgtbdemo.json', 'utf8'));
-var sample1Model = JSON.parse(fs.readFileSync('resources/sample1.json', 'utf8'));
-var sample2Model = JSON.parse(fs.readFileSync('resources/sample2.json', 'utf8'));
-var sample3Model = JSON.parse(fs.readFileSync('resources/sample3.json', 'utf8'));
-var sample4Model = JSON.parse(fs.readFileSync('resources/sample4.json', 'utf8'));
-var sample5Model = JSON.parse(fs.readFileSync('resources/sample5.json', 'utf8'));
-var sample6Model = JSON.parse(fs.readFileSync('resources/sample6.json', 'utf8'));
-var sample7Model = JSON.parse(fs.readFileSync('resources/sample7.json', 'utf8'));
-var sample8Model = JSON.parse(fs.readFileSync('resources/sample8.json', 'utf8'));
-var sample9Model = JSON.parse(fs.readFileSync('resources/sample9.json', 'utf8'));
-var sample10Model = JSON.parse(fs.readFileSync('resources/sample10.json', 'utf8'));
-var sample11Model = JSON.parse(fs.readFileSync('resources/sample11.json', 'utf8'));
-var sample12Model = JSON.parse(fs.readFileSync('resources/sample12.json', 'utf8'));
-var healthyMind = JSON.parse(fs.readFileSync('resources/healthymind.json', 'utf8'));
-
+//var jsonModel = JSON.parse(fs.readFileSync('resources/lgtbdemo.json', 'utf8'));
 
 // =======================
 // configuration =========
@@ -79,6 +64,7 @@ app.set('superSecret', config.secret); // Secret variable
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 app.use(bodyParser.json());
 
 // Use morgan to log requests to the console
@@ -117,71 +103,11 @@ app.get('/', function (req, res) {
 });
 
 // Basic route used for testing only
+/*
 app.get('/resources/Jmodel', function (req, res) {
     res.jsonp(jsonModel);
 });
-
-// Basic route used for testing only
-app.get('/resources/sample1Model', function (req, res) {
-    res.jsonp(sample1Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample2Model', function (req, res) {
-    res.jsonp(sample2Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample3Model', function (req, res) {
-    res.jsonp(sample3Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample4Model', function (req, res) {
-    res.jsonp(sample4Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample5Model', function (req, res) {
-    res.jsonp(sample5Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample6Model', function (req, res) {
-    res.jsonp(sample6Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample7Model', function (req, res) {
-    res.jsonp(sample7Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample8Model', function (req, res) {
-    res.jsonp(sample8Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample9Model', function (req, res) {
-    res.jsonp(sample9Model);
-});
-
-// Basic route used for testing only
-app.get('/resources/sample10Model', function (req, res) {
-    res.jsonp(sample10Model);
-});
-
-app.get('/resources/sample11Model', function (req, res) {
-    res.jsonp(sample11Model);
-});
-
-app.get('/resources/sample12Model', function (req, res) {
-    res.jsonp(sample12Model);
-});
-
-app.get('/resources/healthyMind', function (req, res) {
-    res.jsonp(healthyMind);
-});
+*/
 
 // Set up a JWT RESTfull (Representational State Transfer) API strategy for user authentication
 // API ROUTES -------------------
@@ -208,7 +134,7 @@ apiRoutes.post('/authenticate', function (req, res) {
                     var token = jwt.encode(user, config.secret);
                     var interventionID = user.interventionID;
 
-                    // This JWT is using a different jwt library than the example
+                    // This code below is using the 'jsonwebtoken' jwt library this server is using 'jwt-simple'
                     // Respond to a successful authntication attempt with a JWT token
                     /*
                     var expires = moment().add('days', 120).valueOf();
@@ -217,13 +143,11 @@ apiRoutes.post('/authenticate', function (req, res) {
                         iss: user.username,
                         exp: expires
                     }, app.get('jwtTokenSecret'));
-
                     res.json({
                         token: token,
                         expires: expires,
                         user: user.toJSON()
                     });
-
                     */
 
                     // return the information including token as JSON
@@ -243,6 +167,53 @@ apiRoutes.post('/authenticate', function (req, res) {
         }
     });
 });
+
+// Middleware to use for all requests
+apiRoutes.use(function (req, res, next) {
+
+    console.log('request for the API');
+    // check header or url parameters or post parameters for token
+    //var token = req.body.token || req.query.token || req.headers['authorization'];
+    var token = getToken(req.headers);
+    console.log(token);
+
+    // decode token
+    if (token) {
+        passport.authenticate('jwt', {
+                session: false
+            }),
+            function (req, res) {
+                console.log('Verified, you can now use the route you requsted');
+                //var decoded = jwt.decode(token, config.secret);
+                //req.decoded = decoded;
+                next();
+            }
+            // verifies secret and checks exp
+            /*
+            jwt.verify(token, config.secret, function (err, decoded) {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    // if everything is good, save to request for use in other routes
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+            */
+
+    } else {
+        // if there is no token return error
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
+});
+
+
 
 
 // Route to store user feedback informations (accessed at POST http://localhost:8080/api/store)

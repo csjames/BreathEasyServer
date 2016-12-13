@@ -337,7 +337,7 @@
                     <div class="form-group row">
                         <label for="file" class="col-md-2 col-form-label">Select File</label>
                         <div class="col-md-5">
-                            <input type="file" id="file" class="form-control" />
+                            <input type="file" id="fileToUpload" class="form-control" />
                         </div>
                     </div>
 
@@ -483,7 +483,8 @@
                         };
                         */
 
-                    angular.element(document).find('input').on('change', function (event) {
+                    angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
+                        //angular.element(document).find('input').on('change', function (event) {
                         console.info('element change event');
                         var file = event.target.files[0];
                         vm.fileName = file.name;
@@ -502,20 +503,19 @@
                         console.info('uploaded file: ' + vm.fileName);
                     });
 
-
-                    //document.getElementById("dashboard").addEventListener('mouseover', function () {
-                    //  AuthService.accessSecureArea();
-                    //});
-
                     vm.loginUser = function (user) {
                         AuthService.loginUser(user);
-                        parseInterventions();
-                        parseUsers();
+
+                        setTimeout(function () {
+                            parseInterventions();
+                            parseUsers();
+                        }, 1500);
+
 
                         //Go to the dashboard page after user login
                         setTimeout(function () {
                             window.location.hash = '#dashboard';
-                        }, 1000);
+                        }, 2000);
 
 
                     };
@@ -683,6 +683,7 @@
                     return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
                 };
 
+                /*
                 function tokenManagement() {
                     var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
                     if (token) {
@@ -691,12 +692,13 @@
                             } //changed to authorization
                     }
                 }
+                */
+
                 return {
                     loginUser: loginUser,
                     registerUser: registerUser,
                     logout: logout,
                     accessSecureArea: accessSecureArea,
-                    tokenManagement: tokenManagement,
                     isAuthenticated: function () {
                         return isAuthenticated;
                     }

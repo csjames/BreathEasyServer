@@ -87,7 +87,7 @@ app.get('/client/img/icon.png', function (req, res) {
     res.sendFile(path.join(__dirname + '/client/img/icon.png'));
 });
 
-//Log the client IP on every request
+//Log the client IP on screen on every request
 app.use(function (req, res, next) {
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log('Client IP:', ip);
@@ -97,12 +97,8 @@ app.use(function (req, res, next) {
 // =======================
 // routes ================
 // =======================
-// basic route
-app.get('/', function (req, res) {
-    res.send('Hello! The API is at http://localhost:' + port + '/api');
-});
 
-// Basic route used for testing only
+// Basic route, use for testing only
 /*
 app.get('/resources/Jmodel', function (req, res) {
     res.jsonp(jsonModel);
@@ -168,18 +164,26 @@ apiRoutes.post('/authenticate', function (req, res) {
     });
 });
 
-// Middleware to use for all requests
+// Middleware route to verify a token that will not allow access access to following (routes declared after the middleware route)
+// routes unless a user token is authenticated, please note that the order of the routes
+// determines what can be accessed with and without user authentication
 apiRoutes.use(function (req, res, next) {
 
-    console.log('request for the API');
     // check header or url parameters or post parameters for token
     //var token = req.body.token || req.query.token || req.headers['authorization'];
     var token = getToken(req.headers);
-    console.log(token);
 
     // decode token
     if (token) {
-        next();
+        var decoded = jwt.decode(token, config.secret);
+
+        if (decoded) {
+            console.log('Request from username: ' + decoded.username);
+            next();
+        }
+
+        // passport authenticate does not work
+        /*
         passport.authenticate('jwt', {
                 session: false
             }),
@@ -189,21 +193,23 @@ apiRoutes.use(function (req, res, next) {
                 //req.decoded = decoded;
 
             }
-            // verifies secret and checks exp
-            /*
-            jwt.verify(token, config.secret, function (err, decoded) {
-                if (err) {
-                    return res.json({
-                        success: false,
-                        message: 'Failed to authenticate token.'
-                    });
-                } else {
-                    // if everything is good, save to request for use in other routes
-                    req.decoded = decoded;
-                    next();
-                }
-            });
-            */
+        */
+
+        // verifies secret and checks exp
+        /*
+        jwt.verify(token, config.secret, function (err, decoded) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                next();
+            }
+        });
+        */
 
     } else {
         // if there is no token return error
@@ -357,17 +363,6 @@ var getToken = function (headers) {
         return null;
     }
 };
-
-// TODO: One possible option is to implement a middleware route to verify a token that will not allow
-// access to other routes unless a user token is authenticated, please note that the order of the routes
-// determines what can be accessed with and without authentication
-
-// route to show a random message (GET http://localhost:8080/api/)
-apiRoutes.get('/', function (req, res) {
-    res.json({
-        message: 'Welcome to the coolest API on earth!'
-    });
-});
 
 apiRoutes.get('/userss', passport.authenticate('jwt', {
     session: false
@@ -674,7 +669,7 @@ apiRoutes.post('/getintervention', function (req, res) {
     }
 });
 
-// route to return all stored date (GET http://localhost:8080/api/storedData)
+// route to return all stored data (GET http://localhost:8080/api/storedData)
 apiRoutes.get('/storedData', function (req, res) {
     DataEntry.find({}, function (err, data) {
         res.json(data);

@@ -250,7 +250,7 @@
                                                 <input type="button" class="btn btn-danger btn-med" value="Delete" ng-click="smCtrl.deleteIntervention(intervention.key)">
                                             </td>
                                             <td>
-                                                <input type="button" id="get_file" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key)">
+                                                <input type="button" id="get_file" class="btn btn-primary btn-med" value="Update" ng-click="smCtrl.updateIntervention(intervention.key)" disabled>
                                                 <input type="file" id="my_file">
                                             </td>
                                         </tr>
@@ -368,7 +368,6 @@
                     vm.user = {};
                     vm.newuser = {};
                     vm.fileData = {};
-
                     vm.interventionVersion = {};
                     var interventionContent = {};
                     var API_ENDPOINT = 'https://localhost:8080/api';
@@ -376,22 +375,18 @@
                     // For development
                     // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
-                    vm.search = function (val) {};
-
                     vm.checkAuthentication = function () {
                         return AuthService.isAuthenticated();
                     };
 
                     var parseInterventions = function () {
                         $http.get(API_ENDPOINT + '/interventions').then(function (result) {
-                            console.log(result.data);
                             vm.interventionList = result;
                         });
                     };
 
                     var parseUsers = function () {
                         $http.get(API_ENDPOINT + '/users').then(function (result) {
-                            console.log(result.data);
                             vm.userList = result;
                         });
                     };
@@ -414,9 +409,6 @@
                             console.log(file);
                         }, 0);
 
-                        //document.getElementById('my_file').click();
-                        //var file = document.getElementById('my_file').files[0];
-                        //console.log(file);
                         if (file) {
                             var reader = new FileReader();
                             reader.onloadend = function (e) {
@@ -461,27 +453,7 @@
                             parseInterventions();
                         }, 1500);
 
-
-                        /*
-                        var file = document.getElementById('file').files[0],
-                            reader = new FileReader();
-                        reader.onloadend = function (e) {
-                            vm.FileData = e.target.result;
-                        }
-                        reader.onerror = function (event) {
-                            console.error('File could not be read!' + event.target.error.code);
-                        };
-                        */
                     };
-
-                    /*
-                        vm.openFileDialog = function () {
-                            console.info('openFileDialog()');
-                            ionic.trigger('click', {
-                                target: document.getElementById('file')
-                            });
-                        };
-                        */
 
                     angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
                         //angular.element(document).find('input').on('change', function (event) {
@@ -511,12 +483,10 @@
                             parseUsers();
                         }, 1500);
 
-
                         //Go to the dashboard page after user login
                         setTimeout(function () {
                             window.location.hash = '#dashboard';
                         }, 2000);
-
 
                     };
 
@@ -528,7 +498,6 @@
                         AuthService.logout();
                         document.getElementById("loginFeedback").innerHTML = '';
                     };
-
 
                     vm.parseInterventionList = function () {
                         console.log('parse interventions');
@@ -564,7 +533,6 @@
                             if (result.data.success) {
                                 resolve(result.data.msg);
                                 document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-
                             } else {
                                 reject(result.data.msg);
                                 document.getElementById("interventionFeedback").innerHTML = result.data.msg;
@@ -604,12 +572,10 @@
                         $http.post(API_ENDPOINT + '/authenticate', user).then(function (result) {
                             if (result.data.success) {
                                 storeUserCredentials(result.data.token);
-                                console.log(result.data.token);
                                 resolve(result.data.msg);
                                 document.getElementById("loginFeedback").innerHTML = 'Logged in as ' + user.username;
 
                                 setTimeout(function () {
-                                    console.log('Access secure Area');
                                     accessSecureArea();
                                 }, 1000);
 
@@ -660,7 +626,6 @@
                     }
 
                     // Set the token as header for your requests!
-                    //$http.defaults.headers.common['X-Auth-Token'] = token;
                     $http.defaults.headers.common['authorization'] = token;
                 }
 
@@ -682,17 +647,6 @@
                     }
                     return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
                 };
-
-                /*
-                function tokenManagement() {
-                    var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
-                    if (token) {
-                        options.headers = {
-                                'x-access-token': token
-                            } //changed to authorization
-                    }
-                }
-                */
 
                 return {
                     loginUser: loginUser,

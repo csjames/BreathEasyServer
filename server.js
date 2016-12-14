@@ -179,6 +179,7 @@ apiRoutes.use(function (req, res, next) {
 
     // decode token
     if (token) {
+        next();
         passport.authenticate('jwt', {
                 session: false
             }),
@@ -186,7 +187,7 @@ apiRoutes.use(function (req, res, next) {
                 console.log('Verified, you can now use the route you requsted');
                 //var decoded = jwt.decode(token, config.secret);
                 //req.decoded = decoded;
-                next();
+
             }
             // verifies secret and checks exp
             /*

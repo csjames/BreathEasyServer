@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LifeGuide Toolbox Admin Page</title>
 
-    <link rel="icon" type="image/png" href="https://localhost:8080/client/img/icon.png" />
+    <link rel="icon" type="image/png" href="http://localhost:8080/client/img/icon.png" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -370,7 +370,7 @@
                     vm.fileData = {};
                     vm.interventionVersion = {};
                     var interventionContent = {};
-                    var API_ENDPOINT = 'https://localhost:8080/api';
+                    var API_ENDPOINT = 'http://localhost:8080/api';
 
                     // For development
                     // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
@@ -523,7 +523,7 @@
 
             .service('dataManager', function ($q, $http) {
                 'use strict';
-                var API_ENDPOINT = 'https://localhost:8080/api';
+                var API_ENDPOINT = 'http://localhost:8080/api';
 
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
@@ -554,7 +554,7 @@
                 var isAuthenticated = false;
                 var role = '';
                 var authToken;
-                var API_ENDPOINT = 'https://localhost:8080/api';
+                var API_ENDPOINT = 'http://localhost:8080/api';
                 var AUTH_EVENTS = 'auth-not-authenticated';
 
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
@@ -596,7 +596,7 @@
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
                 function registerUser(user) {
                     return $q(function (resolve, reject) {
-                        $http.post('https://localhost:8080/api/signup', user).then(function (result) {
+                        $http.post('http://localhost:8080/api/signup', user).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
                                 document.getElementById("registrationFeedback").innerHTML = result.data.msg;

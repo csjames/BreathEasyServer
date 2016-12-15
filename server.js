@@ -31,9 +31,9 @@ var DataEntry = require('./app/models/data');
 var Intervention = require('./app/models/intervention');
 var fs = require('fs');
 var http = require('http');
-var https = require('https');
-var privateKey = fs.readFileSync('sslcert/key.pem', 'utf8');
-var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+//var https = require('https');
+//var privateKey = fs.readFileSync('sslcert/key.pem', 'utf8');
+//var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 var path = require('path'); // A library to serve the index file
 
 // Load local JSON intervention for testing purposes ***** NOT using authentication services
@@ -42,14 +42,17 @@ var path = require('path'); // A library to serve the index file
 // =======================
 // configuration =========
 // =======================
-var port = process.env.PORT || 8443; // used to create, sign, and verify tokens
-var httpsport = 8080; // https port
+var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
+// https port
+//var httpsport = 8443;
 mongoose.connect(config.database); // connect to database
 
+/*
 var credentials = {
     key: privateKey,
     cert: certificate
 };
+*/
 
 // Check if we successfully connected with the db
 var db = mongoose.connection;
@@ -162,6 +165,40 @@ apiRoutes.post('/authenticate', function (req, res) {
             });
         }
     });
+});
+
+// Route to create a new user account (POST http://localhost:8080/api/signup)
+apiRoutes.post('/signup', function (req, res) {
+    if (!req.body.username || !req.body.password) {
+        res.json({
+            success: false,
+            msg: 'Please pass username and password.'
+        });
+    } else {
+        var newUser = new User({
+            name: req.body.name,
+            surname: req.body.surname,
+            username: req.body.username,
+            password: req.body.password,
+            interventionID: req.body.interventionID,
+            email: req.body.email,
+            tel: req.body.tel,
+            location: req.body.location
+        });
+        // save the user
+        newUser.save(function (err) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    msg: 'Username already exists.'
+                });
+            }
+            res.json({
+                success: true,
+                msg: 'Successful created new user.'
+            });
+        });
+    }
 });
 
 // Middleware route to verify a token that will not allow access access to following (routes declared after the middleware route)
@@ -278,41 +315,6 @@ apiRoutes.post('/saveintervention', function (req, res) {
             res.json({
                 success: true,
                 msg: 'Successfully stored your intervention in the database.'
-            });
-        });
-    }
-});
-
-
-// Route to create a new user account (POST http://localhost:8080/api/signup)
-apiRoutes.post('/signup', function (req, res) {
-    if (!req.body.username || !req.body.password) {
-        res.json({
-            success: false,
-            msg: 'Please pass username and password.'
-        });
-    } else {
-        var newUser = new User({
-            name: req.body.name,
-            surname: req.body.surname,
-            username: req.body.username,
-            password: req.body.password,
-            interventionID: req.body.interventionID,
-            email: req.body.email,
-            tel: req.body.tel,
-            location: req.body.location
-        });
-        // save the user
-        newUser.save(function (err) {
-            if (err) {
-                return res.json({
-                    success: false,
-                    msg: 'Username already exists.'
-                });
-            }
-            res.json({
-                success: true,
-                msg: 'Successful created new user.'
             });
         });
     }
@@ -683,10 +685,10 @@ app.use('/api', apiRoutes);
 // start the http and https servers ======
 // =======================
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+//var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(port);
-httpsServer.listen(httpsport);
+//httpsServer.listen(httpsport);
 
 console.log('The http server is running at http://localhost:' + port);
-console.log('The https server is running at https://localhost:' + httpsport);
+//console.log('The https server is running at https://localhost:' + httpsport);

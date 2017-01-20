@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LifeGuide Toolbox Admin Page</title>
 
-    <link rel="icon" type="image/png" href="http://localhost:8080/client/img/icon.png" />
+    <link rel="icon" type="image/png" href="http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/client/img/icon.png" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -370,9 +370,11 @@
                     vm.fileData = {};
                     vm.interventionVersion = {};
                     var interventionContent = {};
-                    var API_ENDPOINT = 'http://localhost:8080/api';
+                    var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
 
-                    // For development
+                    // For deployment with local server
+                    // 'http://localhost:8080/api'
+                    // For pre-production development
                     // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
                     vm.checkAuthentication = function () {
@@ -406,7 +408,7 @@
                         setTimeout(function () {
                             document.getElementById('my_file').click();
                             file = document.getElementById('my_file').files[0];
-                            console.log(file);
+                            //console.log(file);
                         }, 0);
 
                         if (file) {
@@ -437,8 +439,6 @@
                     };
 
                     vm.interventionUpload = function () {
-                        console.info('file upload');
-
                         var intervention = {
                             'name': vm.interventionName,
                             'key': vm.interventionID,
@@ -457,7 +457,7 @@
 
                     angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
                         //angular.element(document).find('input').on('change', function (event) {
-                        console.info('element change event');
+                        //console.info('element change event');
                         var file = event.target.files[0];
                         vm.fileName = file.name;
                         var reader = new FileReader();
@@ -465,14 +465,14 @@
                         reader.onload = function (event) {
                             vm.contents = event.target.result;
                             interventionContent = vm.contents;
-                            console.info('File contents: ' + vm.contents);
+                            //console.info('File contents: ' + vm.contents);
                         };
                         reader.onerror = function (event) {
                             console.error('File could not be read!' + event.target.error.code);
                         };
                         // Read the file contents as text
                         reader.readAsText(file);
-                        console.info('uploaded file: ' + vm.fileName);
+                        //console.info('uploaded file: ' + vm.fileName);
                     });
 
                     vm.loginUser = function (user) {
@@ -500,7 +500,6 @@
                     };
 
                     vm.parseInterventionList = function () {
-                        console.log('parse interventions');
                         AuthService.accessSecureArea();
                     };
                 })
@@ -523,8 +522,9 @@
 
             .service('dataManager', function ($q, $http) {
                 'use strict';
-                var API_ENDPOINT = 'http://localhost:8080/api';
+                var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
 
+                //'http://localhost:8080/api'
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
                 var saveIntervention = function (data) {
@@ -554,7 +554,7 @@
                 var isAuthenticated = false;
                 var role = '';
                 var authToken;
-                var API_ENDPOINT = 'http://localhost:8080/api';
+                var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
                 var AUTH_EVENTS = 'auth-not-authenticated';
 
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
@@ -589,14 +589,14 @@
 
                 var accessSecureArea = function () {
                     $http.get(API_ENDPOINT + '/dashboard').then(function (result) {
-                        console.log(result.data.msg);
+                        //console.log(result.data.msg);
                     });
                 };
 
                 //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
                 function registerUser(user) {
                     return $q(function (resolve, reject) {
-                        $http.post('http://localhost:8080/api/signup', user).then(function (result) {
+                        $http.post('http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api/signup', user).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
                                 document.getElementById("registrationFeedback").innerHTML = result.data.msg;

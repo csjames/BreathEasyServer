@@ -23,18 +23,22 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var nodemailer = require('nodemailer');
 var async = require('async');
+var jwt = require('jwt-simple'); // used to create, sign, and verify tokens
+var fs = require('fs');
+var http = require('http');
+var path = require('path'); // A library to serve the index file
 //var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
-var jwt = require('jwt-simple');
+//var https = require('https');
+
+// Data models and configuration files
 var config = require('./config/database');
 var User = require('./app/models/user'); // get our mongoose model
 var DataEntry = require('./app/models/data');
+var UsageEntry = require('./;app/models/usage');
 var Intervention = require('./app/models/intervention');
-var fs = require('fs');
-var http = require('http');
-//var https = require('https');
 //var privateKey = fs.readFileSync('sslcert/key.pem', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
-var path = require('path'); // A library to serve the index file
+
 
 // Load local JSON intervention for testing purposes ***** NOT using authentication services
 //var jsonModel = JSON.parse(fs.readFileSync('resources/lgtbdemo.json', 'utf8'));
@@ -48,6 +52,7 @@ var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
 mongoose.connect(config.database); // connect to database
 
 /*
+// Load https authentication credentials
 var credentials = {
     key: privateKey,
     cert: certificate
@@ -89,15 +94,6 @@ app.get('/', function (req, res) {
 app.get('/client/img/icon.png', function (req, res) {
     res.sendFile(path.join(__dirname + '/client/img/icon.png'));
 });
-
-//Log the client IP on screen on every request
-app.use(function (req, res, next) {
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    console.log('Client IP:', ip);
-    next();
-});
-
-
 
 // =======================
 // routes ================
@@ -217,7 +213,8 @@ apiRoutes.use(function (req, res, next) {
         var decoded = jwt.decode(token, config.secret);
 
         if (decoded) {
-            console.log('Request from username: ' + decoded.username);
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            console.log('Request from username: ' + decoded.username + ' from IP: ' + ip + ' success');
             next();
         }
 
@@ -262,7 +259,44 @@ apiRoutes.use(function (req, res, next) {
 
 
 
-// Route to store user feedback informations (accessed at POST http://localhost:8080/api/store)
+// Route to store user usage data (accessed at POST http://localhost:8080/api/usage)
+apiRoutes.post('/usage', function (req, res) {
+    if (!req.body.data) {
+        res.json({
+            success: false,
+            msg: 'Please pass some usage data.'
+        });
+    } else {
+        var token = getToken(req.headers)
+
+        if (token) {
+            var decoded = jwt.decode(token, config.secret);
+            if (decoded) {
+
+                var newUsageEntry = new UsageEntry({
+                    user: decoded.username,
+                    activityID: req.body.activityID,
+                    timestamp: req.body.timestamp
+                });
+
+                // save the usage data
+                newUsageEntry.save(function (err) {
+                    if (err) {
+                        return res.json({
+                            success: false,
+                            msg: 'Usage Data entry error.'
+                        });
+                    }
+                    res.json({
+                        success: true,
+                        msg: 'Successful stored new usage data entry.'
+                    });
+                });
+            }
+        }
+    }
+});
+
 apiRoutes.post('/store', function (req, res) {
     if (!req.body.key || !req.body.data) {
         res.json({

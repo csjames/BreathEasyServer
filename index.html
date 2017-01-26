@@ -29,7 +29,7 @@
         }
 
         .table-responsive {
-            height: 500px !important;
+            height: 100% !important;
             overflow: scroll;
         }
 
@@ -226,8 +226,9 @@
                             <h3>All Interventions</h3>
                             <div id="interventionFeedback"></div>
                             <label>Search:
-                                <input ng-model="searchText">
+                                <input ng-model="searchIntervention">
                             </label>
+                            <a href="#addIntervention"><span class="glyphicon glyphicon-plus"></span> Add new intervention</a>
                             <div class="table-responsive">
                                 <table id="interventionTable" class="table table-striped table-bordered">
                                     <thead class="thead-inverse">
@@ -241,7 +242,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="intervention in smCtrl.interventionList.data | filter:searchText">
+                                        <tr ng-repeat="intervention in smCtrl.interventionList.data | filter:searchIntervention">
                                             <td>{{$index + 1}}</td>
                                             <td>{{intervention.name}}</td>
                                             <td>{{intervention.key}}</td>
@@ -257,13 +258,14 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <a href="#addIntervention"><span class="glyphicon glyphicon-plus"></span> Add new intervention</a>
-
                         </div>
 
                         <div id="users" class="tab-pane fade">
                             <h3>All Users</h3>
                             <div id="userFeedback"></div>
+                            <label>Search Users
+                                <input ng-model="searchUsers">
+                            </label>
                             <div class="table-responsive">
                                 <table id="userTable" class="table table-striped table-bordered">
                                     <thead class="thead-inverse">
@@ -277,7 +279,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="user in smCtrl.userList.data">
+                                        <tr ng-repeat="user in smCtrl.userList.data | filter:searchUsers">
                                             <td>{{$index + 1}}</td>
                                             <td>{{user.name}}</td>
                                             <td>{{user.surname}}</td>
@@ -363,148 +365,159 @@
         (function () {
             'use strict';
             angular.module('serverManagementModule', [])
-                .controller('serverManagementCtrl', function (AuthService, dataManager, $http) {
-                    var vm = this;
-                    vm.user = {};
-                    vm.newuser = {};
-                    vm.fileData = {};
-                    vm.interventionVersion = {};
-                    var interventionContent = {};
-                    var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
 
-                    // For deployment with local server
-                    // 'http://localhost:8080/api'
-                    // For pre-production development
-                    // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
+            // Please set constant api url for deployment
+            // For local server
+            // 'http://localhost:8080/api'
+            // For pre-production development
+            // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api' accessible only from ECS network
+            // or
+            // 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api'
+            .constant('API_ENDPOINT', {
+                url: 'http://localhost:8080/api'
+            })
 
-                    vm.checkAuthentication = function () {
-                        return AuthService.isAuthenticated();
-                    };
+            .controller('serverManagementCtrl', function (AuthService, dataManager, $http, API_ENDPOINT) {
+                var vm = this;
+                vm.user = {};
+                vm.newuser = {};
+                vm.fileData = {};
+                vm.interventionVersion = {};
+                var interventionContent = {};
 
-                    var parseInterventions = function () {
-                        $http.get(API_ENDPOINT + '/interventions').then(function (result) {
-                            vm.interventionList = result;
-                        });
-                    };
+                vm.checkAuthentication = function () {
+                    return AuthService.isAuthenticated();
+                };
 
-                    var parseUsers = function () {
-                        $http.get(API_ENDPOINT + '/users').then(function (result) {
-                            vm.userList = result;
-                        });
-                    };
+                var parseInterventions = function () {
+                    $http.get(API_ENDPOINT.url + '/interventions').then(function (result) {
+                        vm.interventionList = result;
+                    });
+                };
 
-                    vm.deleteIntervention = function (interventionID) {
-                        $http.delete(API_ENDPOINT + '/intervention/:' + interventionID).then(function (result) {
-                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                            parseInterventions();
-                        }, function (result) {
-                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                        });
-                    };
+                var parseUsers = function () {
+                    $http.get(API_ENDPOINT.url + '/users').then(function (result) {
+                        vm.userList = result;
+                    });
+                };
 
-                    vm.updateIntervention = function (interventionID) {
+                vm.deleteIntervention = function (interventionID) {
+                    $http.delete(API_ENDPOINT.url + '/intervention/:' + interventionID).then(function (result) {
+                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                        parseInterventions();
+                    }, function (result) {
+                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                    });
+                };
 
-                        var file = {};
-                        setTimeout(function () {
-                            document.getElementById('my_file').click();
-                            file = document.getElementById('my_file').files[0];
-                            //console.log(file);
-                        }, 0);
+                vm.updateIntervention = function (interventionID) {
+                    var file = {};
+                    setTimeout(function () {
+                        document.getElementById('my_file').click();
+                        file = document.getElementById('my_file').files[0];
+                        //console.log(file);
+                    }, 0);
 
-                        if (file) {
-                            var reader = new FileReader();
-                            reader.onloadend = function (e) {
-                                var fileData = e.target.result;
-                            };
-                            reader.onerror = function (event) {
-                                console.error('File could not be read!' + event.target.error.code);
-                            };
-                        }
-
-                        $http.put(API_ENDPOINT + '/intervention/:' + interventionID, fileData).then(function (result) {
-                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                            parseInterventions();
-                        }, function (result) {
-                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                        });
-                    };
-
-                    vm.deleteUser = function (username) {
-                        $http.delete(API_ENDPOINT + '/user/:' + username).then(function (result) {
-                            document.getElementById("userFeedback").innerHTML = result.data.msg;
-                            parseUsers();
-                        }, function (result) {
-                            document.getElementById("userFeedback").innerHTML = result.data.msg;
-                        });
-                    };
-
-                    vm.interventionUpload = function () {
-                        var intervention = {
-                            'name': vm.interventionName,
-                            'key': vm.interventionID,
-                            'description': vm.description,
-                            'data': interventionContent
-                        }
-
-                        dataManager.saveIntervention(intervention);
-
-                        //Wait for a 1.5 seconds and update the intervention list
-                        setTimeout(function () {
-                            parseInterventions();
-                        }, 1500);
-
-                    };
-
-                    angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
-                        //angular.element(document).find('input').on('change', function (event) {
-                        //console.info('element change event');
-                        var file = event.target.files[0];
-                        vm.fileName = file.name;
+                    if (file) {
                         var reader = new FileReader();
-                        // Closure to capture the file information
-                        reader.onload = function (event) {
-                            vm.contents = event.target.result;
-                            interventionContent = vm.contents;
-                            //console.info('File contents: ' + vm.contents);
+                        reader.onloadend = function (e) {
+                            var fileData = e.target.result;
                         };
                         reader.onerror = function (event) {
                             console.error('File could not be read!' + event.target.error.code);
                         };
-                        // Read the file contents as text
-                        reader.readAsText(file);
-                        //console.info('uploaded file: ' + vm.fileName);
+                    }
+
+                    $http.put(API_ENDPOINT.url + '/intervention/:' + interventionID, fileData).then(function (result) {
+                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                        parseInterventions();
+                    }, function (result) {
+                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
                     });
+                };
 
-                    vm.loginUser = function (user) {
-                        AuthService.loginUser(user);
+                vm.deleteUser = function (username) {
+                    $http.delete(API_ENDPOINT.url + '/user/:' + username).then(function (result) {
+                        document.getElementById("userFeedback").innerHTML = result.data.msg;
+                        parseUsers();
+                    }, function (result) {
+                        document.getElementById("userFeedback").innerHTML = result.data.msg;
+                    });
+                };
 
-                        setTimeout(function () {
-                            parseInterventions();
-                            parseUsers();
-                        }, 1500);
+                vm.interventionUpload = function () {
+                    var intervention = {
+                        'name': vm.interventionName,
+                        'key': vm.interventionID,
+                        'description': vm.description,
+                        'data': interventionContent
+                    }
 
-                        //Go to the dashboard page after user login
-                        setTimeout(function () {
-                            window.location.hash = '#dashboard';
-                        }, 2000);
+                    dataManager.saveIntervention(intervention);
+                    //Wait for a 1.5 seconds and update the intervention list
+                    setTimeout(function () {
+                        parseInterventions();
+                    }, 1500);
+                    //Go to the dashboard page after you have added the intervention
+                    setTimeout(function () {
+                        window.location.hash = '#dashboard';
+                    }, 2000);
 
+                };
+
+                angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
+                    //angular.element(document).find('input').on('change', function (event) {
+                    //console.info('element change event');
+                    var file = event.target.files[0];
+                    vm.fileName = file.name;
+                    var reader = new FileReader();
+                    // Closure to capture the file information
+                    reader.onload = function (event) {
+                        vm.contents = event.target.result;
+                        interventionContent = vm.contents;
+                        //console.info('File contents: ' + vm.contents);
                     };
-
-                    vm.registerUser = function (newuser) {
-                        AuthService.registerUser(newuser);
+                    reader.onerror = function (event) {
+                        console.error('File could not be read!' + event.target.error.code);
                     };
+                    // Read the file contents as text
+                    reader.readAsText(file);
+                    //console.info('uploaded file: ' + vm.fileName);
+                });
 
-                    vm.logoutUser = function () {
-                        AuthService.logout();
-                        document.getElementById("loginFeedback").innerHTML = '';
+                vm.loginUser = function (user) {
+                    AuthService.loginUser(user);
+
+                    setTimeout(function () {
+                        parseInterventions();
+                        parseUsers();
+                    }, 1500);
+
+                    //Go to the dashboard page after user login
+                    setTimeout(function () {
+                        window.location.hash = '#dashboard';
+                    }, 2000);
+
+                };
+
+                vm.registerUser = function (newuser) {
+                    newuser.role = {
+                        admin: true
                     };
+                    AuthService.registerUser(newuser);
+                };
 
-                    vm.parseInterventionList = function () {
-                        AuthService.accessSecureArea();
-                    };
-                })
+                vm.logoutUser = function () {
+                    AuthService.logout();
+                    document.getElementById("loginFeedback").innerHTML = '';
+                };
 
-            // Check that 2 password fields have the same password
+                vm.parseInterventionList = function () {
+                    AuthService.accessSecureArea();
+                };
+            })
+
+            // Check that 2 password fields match
             .directive('pwCheck', [function () {
                 return {
                     require: 'ngModel',
@@ -520,16 +533,12 @@
                 }
             }])
 
-            .service('dataManager', function ($q, $http) {
+            .service('dataManager', function ($q, $http, API_ENDPOINT) {
                 'use strict';
-                var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
-
-                //'http://localhost:8080/api'
-                //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
                 var saveIntervention = function (data) {
                     return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT + '/saveintervention', data).then(function (result) {
+                        $http.post(API_ENDPOINT.url + '/saveintervention', data).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
                                 document.getElementById("interventionFeedback").innerHTML = result.data.msg;
@@ -547,17 +556,14 @@
 
             })
 
-            .service('AuthService', function ($q, $http) {
+            .service('AuthService', function ($q, $http, API_ENDPOINT) {
 
                 var LOCAL_TOKEN_KEY = 'yourTokenKey';
                 var username = '';
                 var isAuthenticated = false;
                 var role = '';
                 var authToken;
-                var API_ENDPOINT = 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api';
                 var AUTH_EVENTS = 'auth-not-authenticated';
-
-                //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
 
                 function validateForm() {
                     var x = document.forms["login"]["username"].value;
@@ -569,7 +575,7 @@
 
                 function loginUser(user) {
                     return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT + '/authenticate', user).then(function (result) {
+                        $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
                             if (result.data.success) {
                                 storeUserCredentials(result.data.token);
                                 resolve(result.data.msg);
@@ -588,15 +594,14 @@
                 }
 
                 var accessSecureArea = function () {
-                    $http.get(API_ENDPOINT + '/dashboard').then(function (result) {
+                    $http.get(API_ENDPOINT.url + '/dashboard').then(function (result) {
                         //console.log(result.data.msg);
                     });
                 };
 
-                //'http://waisvm-lgapp.ecs.soton.ac.uk/server/api'
                 function registerUser(user) {
                     return $q(function (resolve, reject) {
-                        $http.post('http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api/signup', user).then(function (result) {
+                        $http.post(API_ENDPOINT.url + '/signup', user).then(function (result) {
                             if (result.data.success) {
                                 resolve(result.data.msg);
                                 document.getElementById("registrationFeedback").innerHTML = result.data.msg;

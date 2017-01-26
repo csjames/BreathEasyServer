@@ -30,7 +30,11 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
-    admin: Boolean,
+    role: {
+        admin: Boolean,
+        user: Boolean,
+        author: Boolean
+    },
     interventionID: String,
     email: String,
     tel: Number,

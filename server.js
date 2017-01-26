@@ -34,7 +34,7 @@ var path = require('path'); // A library to serve the index file
 var config = require('./config/database');
 var User = require('./app/models/user'); // get our mongoose model
 var DataEntry = require('./app/models/data');
-var UsageEntry = require('./;app/models/usage');
+var UsageEntry = require('./app/models/usage');
 var Intervention = require('./app/models/intervention');
 //var privateKey = fs.readFileSync('sslcert/key.pem', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
@@ -179,6 +179,11 @@ apiRoutes.post('/signup', function (req, res) {
             username: req.body.username,
             password: req.body.password,
             interventionID: req.body.interventionID,
+            role: {
+                admin: req.body.role.admin,
+                user: req.body.role.user,
+                author: req.body.role.author
+            },
             email: req.body.email,
             tel: req.body.tel,
             location: req.body.location

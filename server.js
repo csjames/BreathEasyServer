@@ -221,6 +221,11 @@ apiRoutes.use(function (req, res, next) {
             var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
             console.log('Request from username: ' + decoded.username + ' from IP: ' + ip + ' success');
             next();
+        } else {
+            return res.status(403).send({
+                success: false,
+                message: 'Not able to verify token provided.'
+            });
         }
 
         // passport authenticate does not work

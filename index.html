@@ -29,7 +29,7 @@
         }
 
         .table-responsive {
-            height: 100% !important;
+            height: 500px !important;
             overflow: scroll;
         }
 
@@ -57,7 +57,7 @@
                     <div id="mynavbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li><a href="#home"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                            <li ng-show="smCtrl.checkAuthentication()"><a href="#dashboard"><span class="glyphicon glyphicon-wrench"></span> Dashboard</a></li>
+                            <li ng-show="smCtrl.checkAuthorisation()"><a href="#dashboard"><span class="glyphicon glyphicon-wrench"></span> Dashboard</a></li>
                             <li><a href="#login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                             <li><a href="#about"><span class="glyphicon glyphicon-info-sign"></span> About</a></li>
                         </ul>
@@ -84,7 +84,7 @@
                 <p class="text-justify">
                     To create a new intervention JSON file please use the most recent web authoring website, available <a href="http://waisvm-lgapp.ecs.soton.ac.uk/editor" target="_blank">here</a>.
                 </p>
-                <span class="text-muted">&copy; Copyright University of Southampton 2016</span>
+                <span class="text-muted">&copy; Copyright University of Southampton 2017</span>
             </div>
         </div>
 
@@ -195,14 +195,6 @@
                 <p class="text-justify">
                     The LifeGuide intervention author management tool enables researchers to optimise their interventions prior to deployment in the Google Play or Apple Store digital distribution services as well as other platforms.
                 </p>
-                <h3>Important About Information you Enter</h3>
-                <p class="text-justify">
-                    Please create an account by clicking on the sign up link at the top right of your screen and provide some required information, since this is for testing interventions and fellow intervention authors and developers will be able to view this information, <strong>it is crusial to treat the site as NOT secure for your personal information.</strong> So please do not to provide with any real personal information and create users that do not include any real user information.
-                </p>
-                <h3>How to Test an Intervention</h3>
-                <p class="text-justify">
-                    To use the tool you simply add your intervention (upload in JSON format) and make sure you remember the intervention ID. In the LifeGuide app (web vesrion) please register a user and in the user's intervention ID put the ID of the intervention you want to test. When you login with that specific user the the system will lookup the intervention with that ID and the intervention will be loaded. If you want to make changes to your intervention just delete the intervention and then add the updated version using the same intervention ID (the intervention ID is unique and you can not have 2 itnervention with the same ID).
-                </p>
                 <p class="text-justify">
                     For more information on the general LifeGuide project please click <a href="https://www.lifeguideonline.org" target="_blank">here</a>.
                 </p>
@@ -211,7 +203,7 @@
 
         <div id="dashboard" class="container vertical-center">
             <div class="jumbotron text-center">
-                <div class="container" ng-show="smCtrl.checkAuthentication()">
+                <div class="container" ng-show="smCtrl.checkAuthorisation()">
                     <h2>Dashboard</h2>
                     <ul class="nav nav-pills nav-justified">
                         <li class="active">
@@ -220,8 +212,24 @@
                         <li>
                             <a href="#users" data-toggle="pill">Users</a>
                         </li>
+                        <li>
+                            <a href="#data" data-toggle="pill">Data</a>
+                        </li>
                     </ul>
                     <div class="tab-content">
+
+                        <div id="data" class="tab-pane fade">
+                            <h3>Data Management</h3>
+                            <div class="pull-left">
+                                <p>Please click below to download user usage data.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserUsageData()">Download User Usage</button>
+                            </div>
+                            <div class="pull-right">
+                                <p>Please click below to download user response data.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserResponseData()">Download User Response</button>
+                            </div>
+                        </div>
+
                         <div id="interventions" class="tab-pane fade in active">
                             <h3>All Interventions</h3>
                             <div id="interventionFeedback"></div>
@@ -296,7 +304,7 @@
                     </div>
                 </div>
 
-                <p class="text-justify" ng-hide="smCtrl.checkAuthentication()">
+                <p class="text-justify" ng-hide="smCtrl.checkAuthorisation()">
                     <strong>Please Note:</strong> You must be signed in to view this page, please click <a href="#login">here</a> to signin. If you are not registered please click <a href="#register">here</a> to register with us.
                 </p>
             </div>
@@ -366,15 +374,8 @@
             'use strict';
             angular.module('serverManagementModule', [])
 
-            // Please set constant api url for deployment
-            // For local server
-            // 'http://localhost:8080/api'
-            // For pre-production development
-            // 'http://waisvm-lgapp.ecs.soton.ac.uk/server/api' accessible only from ECS network
-            // or
-            // 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api'
             .constant('API_ENDPOINT', {
-                url: 'http://localhost:8080/api'
+                url: 'https://myhealthresearch.org/server/api'
             })
 
             .controller('serverManagementCtrl', function (AuthService, dataManager, $http, API_ENDPOINT) {
@@ -384,9 +385,22 @@
                 vm.fileData = {};
                 vm.interventionVersion = {};
                 var interventionContent = {};
+                var isAuthorised = false;
 
+                /*
                 vm.checkAuthentication = function () {
                     return AuthService.isAuthenticated();
+                };
+                */
+
+                // Check that the user is authenticated and authorised
+                vm.checkAuthorisation = function () {
+                    if (AuthService.isAuthorised() && AuthService.isAuthenticated()) {
+                        isAuthorised = true;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 };
 
                 var parseInterventions = function () {
@@ -398,6 +412,32 @@
                 var parseUsers = function () {
                     $http.get(API_ENDPOINT.url + '/users').then(function (result) {
                         vm.userList = result;
+                    });
+                };
+
+                vm.getUserUsageData = function () {
+                    $http.get(API_ENDPOINT.url + '/userUsageData').then(function (result) {
+                        var userUsageData = JSON.stringify(result.data);
+                        console.info(userUsageData);
+                        var hiddenElement = document.createElement('a');
+
+                        hiddenElement.href = 'data:attachment/text,' + encodeURI(userUsageData);
+                        hiddenElement.target = '_blank';
+                        hiddenElement.download = 'userUsageData.txt';
+                        hiddenElement.click();
+                    });
+                };
+
+                vm.getUserResponseData = function () {
+                    $http.get(API_ENDPOINT.url + '/userResponseData').then(function (result) {
+                        var userResponseData = JSON.stringify(result.data);
+                        console.info(userResponseData);
+                        var hiddenElement = document.createElement('a');
+
+                        hiddenElement.href = 'data:attachment/text,' + encodeURI(userResponseData);
+                        hiddenElement.target = '_blank';
+                        hiddenElement.download = 'userResponseData.txt';
+                        hiddenElement.click();
                     });
                 };
 
@@ -489,22 +529,28 @@
                     AuthService.loginUser(user);
 
                     setTimeout(function () {
-                        parseInterventions();
-                        parseUsers();
+                        if (isAuthorised === true) {
+                            parseInterventions();
+                            parseUsers();
+                        }
                     }, 1500);
 
                     //Go to the dashboard page after user login
                     setTimeout(function () {
-                        window.location.hash = '#dashboard';
+                        if (isAuthorised === true) {
+                            window.location.hash = '#dashboard';
+                        }
                     }, 2000);
 
                 };
 
                 vm.registerUser = function (newuser) {
-                    newuser.role = {
-                        admin: true
-                    };
-                    AuthService.registerUser(newuser);
+                    if (isAuthorised === true) {
+                        newuser.role = {
+                            admin: true
+                        };
+                        AuthService.registerUser(newuser);
+                    }
                 };
 
                 vm.logoutUser = function () {
@@ -512,9 +558,11 @@
                     document.getElementById("loginFeedback").innerHTML = '';
                 };
 
+                /*
                 vm.parseInterventionList = function () {
                     AuthService.accessSecureArea();
                 };
+                */
             })
 
             // Check that 2 password fields match
@@ -561,7 +609,7 @@
                 var LOCAL_TOKEN_KEY = 'yourTokenKey';
                 var username = '';
                 var isAuthenticated = false;
-                var role = '';
+                var role = {};
                 var authToken;
                 var AUTH_EVENTS = 'auth-not-authenticated';
 
@@ -578,12 +626,15 @@
                         $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
                             if (result.data.success) {
                                 storeUserCredentials(result.data.token);
+                                role = result.data.role;
                                 resolve(result.data.msg);
                                 document.getElementById("loginFeedback").innerHTML = 'Logged in as ' + user.username;
 
+                                /*
                                 setTimeout(function () {
                                     accessSecureArea();
                                 }, 1000);
+                                */
 
                             } else {
                                 reject(result.data.msg);
@@ -594,9 +645,13 @@
                 }
 
                 var accessSecureArea = function () {
-                    $http.get(API_ENDPOINT.url + '/dashboard').then(function (result) {
-                        //console.log(result.data.msg);
-                    });
+                    if (role.admin === true) {
+                        $http.get(API_ENDPOINT.url + '/dashboard').then(function (result) {
+                            //console.log(result.data.msg);
+                        });
+                    } else {
+                        console.log('Not Authorised to view this page');
+                    }
                 };
 
                 function registerUser(user) {
@@ -646,11 +701,12 @@
                     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
                 }
 
-                var isAuthorized = function (authorizedRoles) {
-                    if (!angular.isArray(authorizedRoles)) {
-                        authorizedRoles = [authorizedRoles];
+                var isAuthorised = function () {
+                    if (role.admin === true) {
+                        return true;
+                    } else {
+                        return false;
                     }
-                    return (isAuthenticated && authorizedRoles.indexOf(role) !== -1);
                 };
 
                 return {
@@ -658,6 +714,7 @@
                     registerUser: registerUser,
                     logout: logout,
                     accessSecureArea: accessSecureArea,
+                    isAuthorised: isAuthorised,
                     isAuthenticated: function () {
                         return isAuthenticated;
                     }

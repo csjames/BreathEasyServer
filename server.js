@@ -95,6 +95,47 @@ app.get('/client/img/icon.png', function (req, res) {
     res.sendFile(path.join(__dirname + '/client/img/icon.png'));
 });
 
+// Manually create a new admin account
+function createAdmin() {
+    var newUser = new User({
+        username: "supremebeing",
+        password: "theFifthElement97",
+        role: {
+            admin: true
+        }
+    });
+    // save the user
+    newUser.save(function (err) {
+        if (err) {
+            console.info("failed to create admin user");
+        } else {
+            console.info("admin created successfully");
+        }
+    });
+}
+
+function createAuthor() {
+    var newUser = new User({
+        username: "LGAuthorAccount",
+        password: "qPl29aveYn88",
+        role: {
+            admin: true
+        }
+    });
+    // save the user
+    newUser.save(function (err) {
+        if (err) {
+            console.info("failed to create author user");
+        } else {
+            console.info("author created successfully");
+        }
+    });
+}
+
+// Create an admin and author account so that we can access the server
+createAdmin();
+createAuthor();
+
 // =======================
 // routes ================
 // =======================
@@ -130,6 +171,7 @@ apiRoutes.post('/authenticate', function (req, res) {
                     // if user is found and password is right create a token
                     var token = jwt.encode(user, config.secret);
                     var interventionID = user.interventionID;
+                    var userRole = user.role;
 
                     // This code below is using the 'jsonwebtoken' jwt library this server is using 'jwt-simple'
                     // Respond to a successful authntication attempt with a JWT token
@@ -151,7 +193,8 @@ apiRoutes.post('/authenticate', function (req, res) {
                     res.json({
                         success: true,
                         token: 'JWT ' + token,
-                        interventionID: interventionID
+                        interventionID: interventionID,
+                        role: userRole
                     });
 
                 } else {
@@ -203,6 +246,7 @@ apiRoutes.post('/signup', function (req, res) {
         });
     }
 });
+
 
 // Middleware route to verify a token that will not allow access access to following (routes declared after the middleware route)
 // routes unless a user token is authenticated, please note that the order of the routes
@@ -266,18 +310,15 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
-
-
-
 // Route to store user usage data (accessed at POST http://localhost:8080/api/usage)
 apiRoutes.post('/usage', function (req, res) {
-    if (!req.body.data) {
+    if (!req.body.activityID) {
         res.json({
             success: false,
             msg: 'Please pass some usage data.'
         });
     } else {
-        var token = getToken(req.headers)
+        var token = getToken(req.headers);
 
         if (token) {
             var decoded = jwt.decode(token, config.secret);
@@ -286,7 +327,7 @@ apiRoutes.post('/usage', function (req, res) {
                 var newUsageEntry = new UsageEntry({
                     user: decoded.username,
                     activityID: req.body.activityID,
-                    timestamp: req.body.timestamp
+                    timestamp: req.body.appTimestamp
                 });
 
                 // save the usage data
@@ -307,6 +348,7 @@ apiRoutes.post('/usage', function (req, res) {
     }
 });
 
+// Route to store user response data (accessed at POST http://localhost:8080/api/store)
 apiRoutes.post('/store', function (req, res) {
     if (!req.body.key || !req.body.data) {
         res.json({
@@ -451,7 +493,11 @@ apiRoutes.get('/userss', passport.authenticate('jwt', {
 
 // route to return all users (GET http://localhost:8080/api/users)
 apiRoutes.get('/users', function (req, res) {
-    User.find({}, function (err, users) {
+    User.find({
+        role: {
+            user: true
+        }
+    }, function (err, users) {
         res.json(users);
     });
 });
@@ -460,6 +506,20 @@ apiRoutes.get('/users', function (req, res) {
 apiRoutes.get('/interventions', function (req, res) {
     Intervention.find({}, function (err, interventions) {
         res.json(interventions);
+    });
+});
+
+// route to return all users (GET http://localhost:8080/api/userUsageData)
+apiRoutes.get('/userUsageData', function (req, res) {
+    UsageEntry.find({}, function (err, usage) {
+        res.json(usage);
+    });
+});
+
+// route to return all stored data (GET http://localhost:8080/api/userResponseData)
+apiRoutes.get('/userResponseData', function (req, res) {
+    DataEntry.find({}, function (err, data) {
+        res.json(data);
     });
 });
 
@@ -715,13 +775,6 @@ apiRoutes.post('/getintervention', function (req, res) {
             res.json(intervention);
         });
     }
-});
-
-// route to return all stored data (GET http://localhost:8080/api/storedData)
-apiRoutes.get('/storedData', function (req, res) {
-    DataEntry.find({}, function (err, data) {
-        res.json(data);
-    });
 });
 
 // Apply the routes to our application with the prefix /api

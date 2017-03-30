@@ -356,25 +356,32 @@ apiRoutes.post('/store', function (req, res) {
             msg: 'Please pass some information.'
         });
     } else {
-        var newDataEntry = new DataEntry({
-            user: req.body.userid,
-            intervention: req.body.interventionid,
-            key: req.body.key,
-            data: req.body.data
-        });
-        // save the user data
-        newDataEntry.save(function (err) {
-            if (err) {
-                return res.json({
-                    success: false,
-                    msg: 'Data entry already exists.'
+        var token = getToken(req.headers);
+
+        if (token) {
+            var decoded = jwt.decode(token, config.secret);
+            if (decoded) {
+                var newDataEntry = new DataEntry({
+                    user: decoded.username,
+                    intervention: decoded.interventionID,
+                    key: req.body.key,
+                    data: req.body.data
+                });
+                // save the user data
+                newDataEntry.save(function (err) {
+                    if (err) {
+                        return res.json({
+                            success: false,
+                            msg: 'Data entry already exists.'
+                        });
+                    }
+                    res.json({
+                        success: true,
+                        msg: 'Successful stored new data entry.'
+                    });
                 });
             }
-            res.json({
-                success: true,
-                msg: 'Successful stored new data entry.'
-            });
-        });
+        }
     }
 });
 
@@ -654,112 +661,112 @@ apiRoutes.post('/reset/:token', function (req, res) {
 // CRUD Routes user (GET http://localhost:8080/api/user)
 apiRoutes.route('/user/:username')
 
-// Get the user with this username (accessed at GET http://localhost:8080/api/user/:username)
-.get(function (req, res) {
-    User.find({
-        username: req.params.username
-    }, function (err, user) {
-        if (err)
-            res.send(err);
-        res.json(user);
-    });
-})
+    // Get the user with this username (accessed at GET http://localhost:8080/api/user/:username)
+    .get(function (req, res) {
+        User.find({
+            username: req.params.username
+        }, function (err, user) {
+            if (err)
+                res.send(err);
+            res.json(user);
+        });
+    })
 
-// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
-.put(function (req, res) {
+    // Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
+    .put(function (req, res) {
 
-    // use the intervention model to find the intervention we want
-    User.findById(req.params.username, function (err, user) {
+        // use the intervention model to find the intervention we want
+        User.findById(req.params.username, function (err, user) {
 
-        if (err)
-            res.send(err);
+            if (err)
+                res.send(err);
 
-        user.name = req.body.name; // update the user name
+            user.name = req.body.name; // update the user name
 
-        // save the user entry
-        user.save(function (err) {
+            // save the user entry
+            user.save(function (err) {
+                if (err)
+                    res.send(err);
+
+                res.json({
+                    message: 'user details updated!'
+                });
+            });
+
+        });
+    })
+
+    // Delete the uesr with this id (accessed at DELETE http://localhost:8080/api/intervention/:user_id)
+    .delete(function (req, res) {
+        User.findOneAndRemove({
+            username: req.params.username.slice(1)
+        }, function (err, user) {
             if (err)
                 res.send(err);
 
             res.json({
-                message: 'user details updated!'
+                message: 'User successfully deleted'
             });
         });
-
     });
-})
-
-// Delete the uesr with this id (accessed at DELETE http://localhost:8080/api/intervention/:user_id)
-.delete(function (req, res) {
-    User.findOneAndRemove({
-        username: req.params.username.slice(1)
-    }, function (err, user) {
-        if (err)
-            res.send(err);
-
-        res.json({
-            message: 'User successfully deleted'
-        });
-    });
-});
 
 // CRUD Routes for intervention (GET http://localhost:8080/api/intervention)
 apiRoutes.route('/intervention/:intervention_id')
 
-// Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)
-.get(function (req, res) {
-    Intervention.findOne({
-        key: req.params.intervention_id.slice(1)
-    }, function (err, intervention) {
-        if (err)
-            res.send(err);
-        res.json(intervention);
-    });
-})
+    // Get the intervention with this id (accessed at GET http://localhost:8080/api/intervention/:intervention_id)
+    .get(function (req, res) {
+        Intervention.findOne({
+            key: req.params.intervention_id.slice(1)
+        }, function (err, intervention) {
+            if (err)
+                res.send(err);
+            res.json(intervention);
+        });
+    })
 
-// Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
-.put(function (req, res) {
+    // Update the intervention with this id (accessed at PUT http://localhost:8080/api/intervention/:intervention_id)
+    .put(function (req, res) {
 
-    console.log("The name of the intervention to update: " + req.params.intervention_id.slice(1));
-    // use the intervention model to find the intervention we want
-    Intervention.find({
-        key: req.params.intervention_id.slice(1)
-    }, function (err, intervention) {
+        console.log("The name of the intervention to update: " + req.params.intervention_id.slice(1));
+        // use the intervention model to find the intervention we want
+        Intervention.find({
+            key: req.params.intervention_id.slice(1)
+        }, function (err, intervention) {
 
-        if (err)
-            res.send(err);
+            if (err)
+                res.send(err);
 
-        console.dir(req.body.content);
+            console.dir(req.body.content);
 
-        intervention.data = req.body.content; // update the intervention data
-        console.dir("The existing data: " + intervention.data);
+            intervention.data = req.body.content; // update the intervention data
+            console.dir("The existing data: " + intervention.data);
 
-        // save the intervention
-        intervention.save(function (err) {
+            // save the intervention
+            intervention.save(function (err) {
+                if (err)
+                    res.send(err);
+
+                res.json({
+                    message: 'Intervention updated!'
+                });
+            });
+
+        });
+    })
+
+    // Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
+    .delete(function (req, res) {
+        Intervention.findOneAndRemove({
+            key: req.params.intervention_id.slice(1)
+        }, function (err, intervention) {
             if (err)
                 res.send(err);
 
             res.json({
-                message: 'Intervention updated!'
+                message: 'Intervention successfully deleted'
             });
         });
-
     });
-})
-
-// Delete the intervention with this id (accessed at DELETE http://localhost:8080/api/intervention/:intervention_id)
-.delete(function (req, res) {
-    Intervention.findOneAndRemove({
-        key: req.params.intervention_id.slice(1)
-    }, function (err, intervention) {
-        if (err)
-            res.send(err);
-
-        res.json({
-            message: 'Intervention successfully deleted'
-        });
-    });
-});
 
 // route to return an intervention (GET http://localhost:8080/api/getintervention)
 apiRoutes.post('/getintervention', function (req, res) {

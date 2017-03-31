@@ -30,6 +30,8 @@ var UserSchema = new Schema({
         type: String,
         required: true
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     role: {
         admin: Boolean,
         user: Boolean,

@@ -109,13 +109,52 @@
                         <button type="submit" id="submit" class="btn btn-primary btn-med">Login</button>
                     </div>
                 </form>
-                <div class="btn-group btn-group-justified">
-                    <form name="forgotenpassword" action="api/users" method="get" accept-charset="utf-8">
-                        <div class="col-md-offset-2 col-md-2">
-                            <button type="submit" class="btn btn-primary btn-med" disabled>Forgoten Password</button>
-                        </div>
-                    </form>
+                <div class="col-md-offset-2 col-md-2">
+                    <div>
+                        <a href="#forgotPassword">Forgotten Password</a>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div id="forgotPassword" class="container vertical-center">
+            <div class="jumbotron">
+                <form name="forgot" class="form-horizontal" ng-submit="smCtrl.forgotUser(smCtrl.forogtUsername)">
+                    <h2>Please enter your user name</h2>
+                    <label>User Name</label>
+                    <input type="text" ng-model="smCtrl.forgotPasswordUsername" required>
+                    <button type="submit">Request New Password</button>
+                </form>
+
+            </div>
+        </div>
+
+        <div id="resetPassword" class="container vertical-center">
+            <div class="jumbotron">
+                <ng-form name="registration" class="form-horizontal">
+                    <h2>Reset Password</h2>
+                    <div class="form-group row">
+                        <label for="password" class="col-md-2 col-form-label">New Password</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="password" name="password" ng-model="smCtrl.newPassword" id="password1" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="confirm" class="col-md-2 col-form-label">Confirm New Password</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="password" name="confirm" ng-model="smCtrl.newPassword" pw-check="password1" id="confirm" required>
+                            <div class="msg-block" ng-show="registration.$error">
+                                <span class="msg-error" ng-show="registration.confirm.$error.pwmatch" style="color:red">
+                                    Must match the previous entry
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-offset-2 col-md-2">
+                        <button type="submit" ng-click="smCtrl.registerUser(smCtrl.newPassword)" class="btn btn-primary btn-med">Change Password</button>
+                    </div>
+                </ng-form>
+
             </div>
         </div>
 
@@ -151,6 +190,11 @@
                         <label for="confirm" class="col-md-2 col-form-label">Confirm Password</label>
                         <div class="col-md-5">
                             <input class="form-control" type="password" name="confirm" ng-model="smCtrl.newuser.confirm" pw-check="password1" id="confirm" required>
+                            <div class="msg-block" ng-show="registration.$error">
+                                <span class="msg-error" ng-show="registration.confirm.$error.pwmatch" style="color:red">
+                                    Must match the previous entry
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -178,12 +222,6 @@
                 </ng-form>
                 <div class="btn-group btn-group-justified">
 
-                </div>
-
-                <div class="msg-block" ng-show="registration.$error">
-                    <span class="msg-error" ng-show="registration.confirm.$error.pwmatch">
-    The 2 passwords don't match.
-  </span>
                 </div>
 
             </div>
@@ -370,357 +408,357 @@
     </footer>
 
     <script>
-        (function () {
+        (function() {
             'use strict';
             angular.module('serverManagementModule', [])
 
-            .constant('API_ENDPOINT', {
-                url: 'https://myhealthresearch.org/server/api'
-            })
+                .constant('API_ENDPOINT', {
+                    url: 'https://myhealthresearch.org/server/api'
+                })
 
-            .controller('serverManagementCtrl', function (AuthService, dataManager, $http, API_ENDPOINT) {
-                var vm = this;
-                vm.user = {};
-                vm.newuser = {};
-                vm.fileData = {};
-                vm.interventionVersion = {};
-                var interventionContent = {};
-                var isAuthorised = false;
+                .controller('serverManagementCtrl', function(AuthService, dataManager, $http, API_ENDPOINT) {
+                    var vm = this;
+                    vm.user = {};
+                    vm.newuser = {};
+                    vm.fileData = {};
+                    vm.interventionVersion = {};
+                    var interventionContent = {};
+                    var isAuthorised = false;
 
-                /*
-                vm.checkAuthentication = function () {
-                    return AuthService.isAuthenticated();
-                };
-                */
+                    /*
+                    vm.checkAuthentication = function () {
+                        return AuthService.isAuthenticated();
+                    };
+                    */
 
-                // Check that the user is authenticated and authorised
-                vm.checkAuthorisation = function () {
-                    if (AuthService.isAuthorised() && AuthService.isAuthenticated()) {
-                        isAuthorised = true;
-                        return true;
-                    } else {
-                        return false;
-                    }
-                };
+                    // Check that the user is authenticated and authorised
+                    vm.checkAuthorisation = function() {
+                        if (AuthService.isAuthorised() && AuthService.isAuthenticated()) {
+                            isAuthorised = true;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    };
 
-                var parseInterventions = function () {
-                    $http.get(API_ENDPOINT.url + '/interventions').then(function (result) {
-                        vm.interventionList = result;
-                    });
-                };
+                    var parseInterventions = function() {
+                        $http.get(API_ENDPOINT.url + '/interventions').then(function(result) {
+                            vm.interventionList = result;
+                        });
+                    };
 
-                var parseUsers = function () {
-                    $http.get(API_ENDPOINT.url + '/users').then(function (result) {
-                        vm.userList = result;
-                    });
-                };
+                    var parseUsers = function() {
+                        $http.get(API_ENDPOINT.url + '/users').then(function(result) {
+                            vm.userList = result;
+                        });
+                    };
 
-                vm.getUserUsageData = function () {
-                    $http.get(API_ENDPOINT.url + '/userUsageData').then(function (result) {
-                        var userUsageData = JSON.stringify(result.data);
-                        console.info(userUsageData);
-                        var hiddenElement = document.createElement('a');
+                    vm.getUserUsageData = function() {
+                        $http.get(API_ENDPOINT.url + '/userUsageData').then(function(result) {
+                            var userUsageData = JSON.stringify(result.data);
+                            console.info(userUsageData);
+                            var hiddenElement = document.createElement('a');
 
-                        hiddenElement.href = 'data:attachment/text,' + encodeURI(userUsageData);
-                        hiddenElement.target = '_blank';
-                        hiddenElement.download = 'userUsageData.txt';
-                        hiddenElement.click();
-                    });
-                };
+                            hiddenElement.href = 'data:attachment/text,' + encodeURI(userUsageData);
+                            hiddenElement.target = '_blank';
+                            hiddenElement.download = 'userUsageData.txt';
+                            hiddenElement.click();
+                        });
+                    };
 
-                vm.getUserResponseData = function () {
-                    $http.get(API_ENDPOINT.url + '/userResponseData').then(function (result) {
-                        var userResponseData = JSON.stringify(result.data);
-                        console.info(userResponseData);
-                        var hiddenElement = document.createElement('a');
+                    vm.getUserResponseData = function() {
+                        $http.get(API_ENDPOINT.url + '/userResponseData').then(function(result) {
+                            var userResponseData = JSON.stringify(result.data);
+                            console.info(userResponseData);
+                            var hiddenElement = document.createElement('a');
 
-                        hiddenElement.href = 'data:attachment/text,' + encodeURI(userResponseData);
-                        hiddenElement.target = '_blank';
-                        hiddenElement.download = 'userResponseData.txt';
-                        hiddenElement.click();
-                    });
-                };
+                            hiddenElement.href = 'data:attachment/text,' + encodeURI(userResponseData);
+                            hiddenElement.target = '_blank';
+                            hiddenElement.download = 'userResponseData.txt';
+                            hiddenElement.click();
+                        });
+                    };
 
-                vm.deleteIntervention = function (interventionID) {
-                    $http.delete(API_ENDPOINT.url + '/intervention/:' + interventionID).then(function (result) {
-                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                        parseInterventions();
-                    }, function (result) {
-                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                    });
-                };
+                    vm.deleteIntervention = function(interventionID) {
+                        $http.delete(API_ENDPOINT.url + '/intervention/:' + interventionID).then(function(result) {
+                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                            parseInterventions();
+                        }, function(result) {
+                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                        });
+                    };
 
-                vm.updateIntervention = function (interventionID) {
-                    var file = {};
-                    setTimeout(function () {
-                        document.getElementById('my_file').click();
-                        file = document.getElementById('my_file').files[0];
-                        //console.log(file);
-                    }, 0);
+                    vm.updateIntervention = function(interventionID) {
+                        var file = {};
+                        setTimeout(function() {
+                            document.getElementById('my_file').click();
+                            file = document.getElementById('my_file').files[0];
+                            //console.log(file);
+                        }, 0);
 
-                    if (file) {
+                        if (file) {
+                            var reader = new FileReader();
+                            reader.onloadend = function(e) {
+                                var fileData = e.target.result;
+                            };
+                            reader.onerror = function(event) {
+                                console.error('File could not be read!' + event.target.error.code);
+                            };
+                        }
+
+                        $http.put(API_ENDPOINT.url + '/intervention/:' + interventionID, fileData).then(function(result) {
+                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                            parseInterventions();
+                        }, function(result) {
+                            document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                        });
+                    };
+
+                    vm.deleteUser = function(username) {
+                        $http.delete(API_ENDPOINT.url + '/user/:' + username).then(function(result) {
+                            document.getElementById("userFeedback").innerHTML = result.data.msg;
+                            parseUsers();
+                        }, function(result) {
+                            document.getElementById("userFeedback").innerHTML = result.data.msg;
+                        });
+                    };
+
+                    vm.interventionUpload = function() {
+                        var intervention = {
+                            'name': vm.interventionName,
+                            'key': vm.interventionID,
+                            'description': vm.description,
+                            'data': interventionContent
+                        }
+
+                        dataManager.saveIntervention(intervention);
+                        //Wait for a 1.5 seconds and update the intervention list
+                        setTimeout(function() {
+                            parseInterventions();
+                        }, 1500);
+                        //Go to the dashboard page after you have added the intervention
+                        setTimeout(function() {
+                            window.location.hash = '#dashboard';
+                        }, 2000);
+
+                    };
+
+                    angular.element(document.getElementById('fileToUpload')).on('change', function(event) {
+                        //angular.element(document).find('input').on('change', function (event) {
+                        //console.info('element change event');
+                        var file = event.target.files[0];
+                        vm.fileName = file.name;
                         var reader = new FileReader();
-                        reader.onloadend = function (e) {
-                            var fileData = e.target.result;
+                        // Closure to capture the file information
+                        reader.onload = function(event) {
+                            vm.contents = event.target.result;
+                            interventionContent = vm.contents;
+                            //console.info('File contents: ' + vm.contents);
                         };
-                        reader.onerror = function (event) {
+                        reader.onerror = function(event) {
                             console.error('File could not be read!' + event.target.error.code);
                         };
-                    }
-
-                    $http.put(API_ENDPOINT.url + '/intervention/:' + interventionID, fileData).then(function (result) {
-                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                        parseInterventions();
-                    }, function (result) {
-                        document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                        // Read the file contents as text
+                        reader.readAsText(file);
+                        //console.info('uploaded file: ' + vm.fileName);
                     });
-                };
 
-                vm.deleteUser = function (username) {
-                    $http.delete(API_ENDPOINT.url + '/user/:' + username).then(function (result) {
-                        document.getElementById("userFeedback").innerHTML = result.data.msg;
-                        parseUsers();
-                    }, function (result) {
-                        document.getElementById("userFeedback").innerHTML = result.data.msg;
-                    });
-                };
+                    vm.loginUser = function(user) {
+                        AuthService.loginUser(user);
 
-                vm.interventionUpload = function () {
-                    var intervention = {
-                        'name': vm.interventionName,
-                        'key': vm.interventionID,
-                        'description': vm.description,
-                        'data': interventionContent
+                        setTimeout(function() {
+                            if (isAuthorised === true) {
+                                parseInterventions();
+                                parseUsers();
+                            }
+                        }, 1500);
+
+                        //Go to the dashboard page after user login
+                        setTimeout(function() {
+                            if (isAuthorised === true) {
+                                window.location.hash = '#dashboard';
+                            }
+                        }, 2000);
+
+                    };
+
+                    vm.registerUser = function(newuser) {
+                        if (isAuthorised === true) {
+                            newuser.role = {
+                                admin: true
+                            };
+                            AuthService.registerUser(newuser);
+                        }
+                    };
+
+                    vm.logoutUser = function() {
+                        AuthService.logout();
+                        document.getElementById("loginFeedback").innerHTML = '';
+                    };
+
+                    /*
+                    vm.parseInterventionList = function () {
+                        AuthService.accessSecureArea();
+                    };
+                    */
+                })
+
+                // Check that 2 password fields match
+                .directive('pwCheck', [function() {
+                    return {
+                        require: 'ngModel',
+                        link: function(scope, elem, attrs, ctrl) {
+                            var firstPassword = '#' + attrs.pwCheck;
+                            $(elem).add(firstPassword).on('keyup', function() {
+                                scope.$apply(function() {
+                                    var v = elem.val() === $(firstPassword).val();
+                                    ctrl.$setValidity('pwmatch', v);
+                                });
+                            });
+                        }
+                    }
+                }])
+
+                .service('dataManager', function($q, $http, API_ENDPOINT) {
+                    'use strict';
+
+                    var saveIntervention = function(data) {
+                        return $q(function(resolve, reject) {
+                            $http.post(API_ENDPOINT.url + '/saveintervention', data).then(function(result) {
+                                if (result.data.success) {
+                                    resolve(result.data.msg);
+                                    document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                                } else {
+                                    reject(result.data.msg);
+                                    document.getElementById("interventionFeedback").innerHTML = result.data.msg;
+                                }
+                            });
+                        });
+                    };
+
+                    return {
+                        saveIntervention: saveIntervention
+                    };
+
+                })
+
+                .service('AuthService', function($q, $http, API_ENDPOINT) {
+
+                    var LOCAL_TOKEN_KEY = 'yourTokenKey';
+                    var username = '';
+                    var isAuthenticated = false;
+                    var role = {};
+                    var authToken;
+                    var AUTH_EVENTS = 'auth-not-authenticated';
+
+                    function validateForm() {
+                        var x = document.forms["login"]["username"].value;
+                        if (x == null || x == "") {
+                            alert("Please fill out the username");
+                            return false;
+                        }
                     }
 
-                    dataManager.saveIntervention(intervention);
-                    //Wait for a 1.5 seconds and update the intervention list
-                    setTimeout(function () {
-                        parseInterventions();
-                    }, 1500);
-                    //Go to the dashboard page after you have added the intervention
-                    setTimeout(function () {
-                        window.location.hash = '#dashboard';
-                    }, 2000);
+                    function loginUser(user) {
+                        return $q(function(resolve, reject) {
+                            $http.post(API_ENDPOINT.url + '/authenticate', user).then(function(result) {
+                                if (result.data.success) {
+                                    storeUserCredentials(result.data.token);
+                                    role = result.data.role;
+                                    resolve(result.data.msg);
+                                    document.getElementById("loginFeedback").innerHTML = 'Logged in as ' + user.username;
 
-                };
+                                    /*
+                                    setTimeout(function () {
+                                        accessSecureArea();
+                                    }, 1000);
+                                    */
 
-                angular.element(document.getElementById('fileToUpload')).on('change', function (event) {
-                    //angular.element(document).find('input').on('change', function (event) {
-                    //console.info('element change event');
-                    var file = event.target.files[0];
-                    vm.fileName = file.name;
-                    var reader = new FileReader();
-                    // Closure to capture the file information
-                    reader.onload = function (event) {
-                        vm.contents = event.target.result;
-                        interventionContent = vm.contents;
-                        //console.info('File contents: ' + vm.contents);
-                    };
-                    reader.onerror = function (event) {
-                        console.error('File could not be read!' + event.target.error.code);
-                    };
-                    // Read the file contents as text
-                    reader.readAsText(file);
-                    //console.info('uploaded file: ' + vm.fileName);
-                });
-
-                vm.loginUser = function (user) {
-                    AuthService.loginUser(user);
-
-                    setTimeout(function () {
-                        if (isAuthorised === true) {
-                            parseInterventions();
-                            parseUsers();
-                        }
-                    }, 1500);
-
-                    //Go to the dashboard page after user login
-                    setTimeout(function () {
-                        if (isAuthorised === true) {
-                            window.location.hash = '#dashboard';
-                        }
-                    }, 2000);
-
-                };
-
-                vm.registerUser = function (newuser) {
-                    if (isAuthorised === true) {
-                        newuser.role = {
-                            admin: true
-                        };
-                        AuthService.registerUser(newuser);
-                    }
-                };
-
-                vm.logoutUser = function () {
-                    AuthService.logout();
-                    document.getElementById("loginFeedback").innerHTML = '';
-                };
-
-                /*
-                vm.parseInterventionList = function () {
-                    AuthService.accessSecureArea();
-                };
-                */
-            })
-
-            // Check that 2 password fields match
-            .directive('pwCheck', [function () {
-                return {
-                    require: 'ngModel',
-                    link: function (scope, elem, attrs, ctrl) {
-                        var firstPassword = '#' + attrs.pwCheck;
-                        $(elem).add(firstPassword).on('keyup', function () {
-                            scope.$apply(function () {
-                                var v = elem.val() === $(firstPassword).val();
-                                ctrl.$setValidity('pwmatch', v);
+                                } else {
+                                    reject(result.data.msg);
+                                    document.getElementById("loginFeedback").innerHTML = result.data.msg;
+                                }
                             });
                         });
                     }
-                }
-            }])
 
-            .service('dataManager', function ($q, $http, API_ENDPOINT) {
-                'use strict';
+                    var accessSecureArea = function() {
+                        if (role.admin === true) {
+                            $http.get(API_ENDPOINT.url + '/dashboard').then(function(result) {
+                                //console.log(result.data.msg);
+                            });
+                        } else {
+                            console.log('Not Authorised to view this page');
+                        }
+                    };
 
-                var saveIntervention = function (data) {
-                    return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT.url + '/saveintervention', data).then(function (result) {
-                            if (result.data.success) {
-                                resolve(result.data.msg);
-                                document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                            } else {
-                                reject(result.data.msg);
-                                document.getElementById("interventionFeedback").innerHTML = result.data.msg;
-                            }
+                    function registerUser(user) {
+                        return $q(function(resolve, reject) {
+                            $http.post(API_ENDPOINT.url + '/signup', user).then(function(result) {
+                                if (result.data.success) {
+                                    resolve(result.data.msg);
+                                    document.getElementById("registrationFeedback").innerHTML = result.data.msg;
+                                } else {
+                                    reject(result.data.msg);
+                                    document.getElementById("registrationFeedback").innerHTML = result.data.msg;
+                                }
+                            });
                         });
-                    });
-                };
-
-                return {
-                    saveIntervention: saveIntervention
-                };
-
-            })
-
-            .service('AuthService', function ($q, $http, API_ENDPOINT) {
-
-                var LOCAL_TOKEN_KEY = 'yourTokenKey';
-                var username = '';
-                var isAuthenticated = false;
-                var role = {};
-                var authToken;
-                var AUTH_EVENTS = 'auth-not-authenticated';
-
-                function validateForm() {
-                    var x = document.forms["login"]["username"].value;
-                    if (x == null || x == "") {
-                        alert("Please fill out the username");
-                        return false;
-                    }
-                }
-
-                function loginUser(user) {
-                    return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT.url + '/authenticate', user).then(function (result) {
-                            if (result.data.success) {
-                                storeUserCredentials(result.data.token);
-                                role = result.data.role;
-                                resolve(result.data.msg);
-                                document.getElementById("loginFeedback").innerHTML = 'Logged in as ' + user.username;
-
-                                /*
-                                setTimeout(function () {
-                                    accessSecureArea();
-                                }, 1000);
-                                */
-
-                            } else {
-                                reject(result.data.msg);
-                                document.getElementById("loginFeedback").innerHTML = result.data.msg;
-                            }
-                        });
-                    });
-                }
-
-                var accessSecureArea = function () {
-                    if (role.admin === true) {
-                        $http.get(API_ENDPOINT.url + '/dashboard').then(function (result) {
-                            //console.log(result.data.msg);
-                        });
-                    } else {
-                        console.log('Not Authorised to view this page');
-                    }
-                };
-
-                function registerUser(user) {
-                    return $q(function (resolve, reject) {
-                        $http.post(API_ENDPOINT.url + '/signup', user).then(function (result) {
-                            if (result.data.success) {
-                                resolve(result.data.msg);
-                                document.getElementById("registrationFeedback").innerHTML = result.data.msg;
-                            } else {
-                                reject(result.data.msg);
-                                document.getElementById("registrationFeedback").innerHTML = result.data.msg;
-                            }
-                        });
-                    });
-                }
-
-                function storeUserCredentials(token) {
-                    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
-                    useCredentials(token);
-                }
-
-                function useCredentials(token) {
-                    username = token.split('.')[0];
-                    isAuthenticated = true;
-                    authToken = token;
-
-                    if (username == 'admin') {
-                        role = USER_ROLES.admin
-                    }
-                    if (username == 'user') {
-                        role = USER_ROLES.public
                     }
 
-                    // Set the token as header for your requests!
-                    $http.defaults.headers.common['authorization'] = token;
-                }
-
-                var logout = function () {
-                    destroyUserCredentials();
-                };
-
-                function destroyUserCredentials() {
-                    authToken = undefined;
-                    username = '';
-                    isAuthenticated = false;
-                    $http.defaults.headers.common['authorization'] = undefined; //changed X-Auth-Token to authorization
-                    window.localStorage.removeItem(LOCAL_TOKEN_KEY);
-                }
-
-                var isAuthorised = function () {
-                    if (role.admin === true) {
-                        return true;
-                    } else {
-                        return false;
+                    function storeUserCredentials(token) {
+                        window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+                        useCredentials(token);
                     }
-                };
 
-                return {
-                    loginUser: loginUser,
-                    registerUser: registerUser,
-                    logout: logout,
-                    accessSecureArea: accessSecureArea,
-                    isAuthorised: isAuthorised,
-                    isAuthenticated: function () {
-                        return isAuthenticated;
+                    function useCredentials(token) {
+                        username = token.split('.')[0];
+                        isAuthenticated = true;
+                        authToken = token;
+
+                        if (username == 'admin') {
+                            role = USER_ROLES.admin
+                        }
+                        if (username == 'user') {
+                            role = USER_ROLES.public
+                        }
+
+                        // Set the token as header for your requests!
+                        $http.defaults.headers.common['authorization'] = token;
                     }
-                };
 
-            });
+                    var logout = function() {
+                        destroyUserCredentials();
+                    };
+
+                    function destroyUserCredentials() {
+                        authToken = undefined;
+                        username = '';
+                        isAuthenticated = false;
+                        $http.defaults.headers.common['authorization'] = undefined; //changed X-Auth-Token to authorization
+                        window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+                    }
+
+                    var isAuthorised = function() {
+                        if (role.admin === true) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    };
+
+                    return {
+                        loginUser: loginUser,
+                        registerUser: registerUser,
+                        logout: logout,
+                        accessSecureArea: accessSecureArea,
+                        isAuthorised: isAuthorised,
+                        isAuthenticated: function() {
+                            return isAuthenticated;
+                        }
+                    };
+
+                });
 
         }());
     </script>

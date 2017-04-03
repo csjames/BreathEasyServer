@@ -119,7 +119,7 @@
 
         <div id="forgotPassword" class="container vertical-center">
             <div class="jumbotron">
-                <form name="forgot" class="form-horizontal" ng-submit="smCtrl.forgotUser(smCtrl.forogtUsername)">
+                <form name="forgot" class="form-horizontal" ng-submit="smCtrl.forgotPassword(smCtrl.forgotPasswordUsername)">
                     <h2>Please enter your user name</h2>
                     <label>User Name</label>
                     <input type="text" ng-model="smCtrl.forgotPasswordUsername" required>
@@ -411,12 +411,12 @@
         (function() {
             'use strict';
             angular.module('serverManagementModule', [])
-
+                //https://myhealthresearch.org/server/api
                 .constant('API_ENDPOINT', {
-                    url: 'https://myhealthresearch.org/server/api'
+                    url: 'http://localhost:8080/api'
                 })
 
-                .controller('serverManagementCtrl', function(AuthService, dataManager, $http, API_ENDPOINT) {
+                .controller('serverManagementCtrl', function(AuthService, dataManager, $http, $q, API_ENDPOINT) {
                     var vm = this;
                     vm.user = {};
                     vm.newuser = {};
@@ -451,6 +451,20 @@
                         $http.get(API_ENDPOINT.url + '/users').then(function(result) {
                             vm.userList = result;
                         });
+                    };
+
+                    vm.forgotPassword = function(username) {
+                        var user = {"username": username};
+                        //return $q(function(resolve, reject) {
+                        $http.post(API_ENDPOINT.url + '/forgot', user).then(function successCallback(response) {
+                            // this callback will be called asynchronously
+                            // when the response is available
+
+                        }, function errorCallback(response) {
+                            // called asynchronously if an error occurs
+                            // or server returns response with an error status.
+                        });
+                        //});
                     };
 
                     vm.getUserUsageData = function() {
@@ -583,7 +597,8 @@
                     };
 
                     vm.registerUser = function(newuser) {
-                        if (isAuthorised === true) {
+                        // Put this condition (isAuthorised === true) in the if statement
+                        if (true) {
                             newuser.role = {
                                 admin: true
                             };

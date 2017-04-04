@@ -17,6 +17,18 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <style>
+        .vertical-horizontal-center {
+            height: 100vh;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+
         .vertical-center {
             min-height: 100%;
             min-height: 100vh;
@@ -31,6 +43,14 @@
         .table-responsive {
             height: 500px !important;
             overflow: scroll;
+        }
+
+        #loginScreenLink {
+            display: flex;
+            overflow: hidden;
+            padding: 2px;
+            margin: 0 auto;
+            visibility: visible;
         }
 
         #my_file {
@@ -88,37 +108,37 @@
             </div>
         </div>
 
-        <div id="login" class="container vertical-center">
-            <div class="jumbotron">
-                <form name="user" class="form-horizontal" ng-submit="smCtrl.loginUser(smCtrl.user)">
-                    <h2>Please enter your login information</h2>
-                    <div id="loginFeedback"></div>
-                    <div class="form-group">
-                        <label for="username" class="control-label col-md-2">Username</label>
-                        <div class="col-md-2">
-                            <input type="text" maxlength="20" name="username" placeholder="username" ng-model="smCtrl.user.username" id="username" required>
+        <div id="login" class="container vertical-horizontal-center">
+            <div>
+                <div class="jumbotron text-left">
+                    <form name="user" class="form-horizontal" ng-submit="smCtrl.loginUser(smCtrl.user)">
+                        <h2>Please enter your login information</h2>
+                        <div id="loginFeedback"></div>
+                        <div class="form-group">
+                            <label for="username" class="control-label col-md-2">Username</label>
+                            <div class="col-md-2">
+                                <input type="text" maxlength="20" name="username" placeholder="username" ng-model="smCtrl.user.username" id="username" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="control-label col-md-2">Password</label>
-                        <div class="col-md-2">
-                            <input type="password" maxlength="20" name="password" placeholder="password" ng-model="smCtrl.user.password" id="password" required>
+                        <div class="form-group">
+                            <label for="password" class="control-label col-md-2">Password</label>
+                            <div class="col-md-2">
+                                <input type="password" maxlength="20" name="password" placeholder="password" ng-model="smCtrl.user.password" id="password" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-offset-2 col-md-2">
-                        <button type="submit" id="submit" class="btn btn-primary btn-med">Login</button>
-                    </div>
-                </form>
-                <div class="col-md-offset-2 col-md-2">
-                    <div>
-                        <a href="#forgotPassword">Forgotten Password</a>
-                    </div>
+                        <div class="col-md-offset-2 col-md-2">
+                            <button type="submit" id="submit" class="btn btn-primary btn-med">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <a href="#forgotPassword">Forgotten Password</a>
                 </div>
             </div>
         </div>
 
-        <div id="forgotPassword" class="container vertical-center">
-            <div class="jumbotron">
+        <div id="forgotPassword" class="container vertical-horizontal-center">
+            <div class="jumbotron text-left">
                 <form name="forgot" class="form-horizontal" ng-submit="smCtrl.forgotPassword(smCtrl.forgotPasswordUsername)">
                     <h2>Please enter your user name</h2>
                     <label>User Name</label>
@@ -129,29 +149,29 @@
             </div>
         </div>
 
-        <div id="resetPassword" class="container vertical-center">
-            <div class="jumbotron">
-                <ng-form name="registration" class="form-horizontal">
+        <div id="resetPassword" class="container vertical-horizontal-center">
+            <div class="jumbotron text-center">
+                <ng-form name="reset" class="form-horizontal">
                     <h2>Reset Password</h2>
                     <div class="form-group row">
-                        <label for="password" class="col-md-2 col-form-label">New Password</label>
-                        <div class="col-md-5">
-                            <input class="form-control" type="password" name="password" ng-model="smCtrl.newPassword" id="password1" required>
+                        <label for="password" class="col-md-5 col-form-label">New Password</label>
+                        <div class="col-md-6">
+                            <input class="form-control" type="password" name="password" ng-model="smCtrl.newPassword" id="newPassword1" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="confirm" class="col-md-2 col-form-label">Confirm New Password</label>
-                        <div class="col-md-5">
-                            <input class="form-control" type="password" name="confirm" ng-model="smCtrl.newPassword" pw-check="password1" id="confirm" required>
-                            <div class="msg-block" ng-show="registration.$error">
-                                <span class="msg-error" ng-show="registration.confirm.$error.pwmatch" style="color:red">
+                        <label for="confirm" class="col-md-5 col-form-label">Confirm New Password</label>
+                        <div class="col-md-6">
+                            <input class="form-control" type="password" name="confirm" ng-model="smCtrl.confirmNewPassword" pw-check="newPassword1" id="confirm" required>
+                            <div class="msg-block" ng-show="reset.$error">
+                                <span class="msg-error" ng-show="reset.confirm.$error.pwmatch" style="color:red">
                                     Must match the previous entry
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-offset-2 col-md-2">
-                        <button type="submit" ng-click="smCtrl.registerUser(smCtrl.newPassword)" class="btn btn-primary btn-med">Change Password</button>
+                    <div class="col-md-offset-5 col-md-2">
+                        <button type="submit" ng-click="smCtrl.resetPassword(smCtrl.newPassword)" class="btn btn-primary btn-med">Change Password</button>
                     </div>
                 </ng-form>
 
@@ -159,7 +179,7 @@
         </div>
 
         <div id="register" class="container vertical-center">
-            <div class="jumbotron">
+            <div class="jumbotron text-left">
                 <ng-form name="registration" class="form-horizontal">
                     <h2>Registration Form</h2>
                     <div class="form-group row">
@@ -349,7 +369,7 @@
         </div>
 
         <div id="logout" class="container vertical-center">
-            <div class="jumbotron text-center">
+            <div class="jumbotron text-left">
                 <h2>You have successfully logged out.</h2>
                 <p class="text-justify">
                     If you want to sign back in please click <a href="#login">here</a>. If you want to go to the home page please click <a href="#home">here</a>
@@ -454,7 +474,9 @@
                     };
 
                     vm.forgotPassword = function(username) {
-                        var user = {"username": username};
+                        var user = {
+                            "username": username
+                        };
                         //return $q(function(resolve, reject) {
                         $http.post(API_ENDPOINT.url + '/forgot', user).then(function successCallback(response) {
                             // this callback will be called asynchronously

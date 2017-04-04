@@ -250,11 +250,13 @@ apiRoutes.post('/signup', function (req, res) {
 });
 
 // route for password reset
+/*
 apiRoutes.get('/forgot', function (req, res) {
     res.json({
         'user': req.user
     });
 });
+*/
 
 // route for password reset
 apiRoutes.post('/forgot', function (req, res, next) {
@@ -272,7 +274,8 @@ apiRoutes.post('/forgot', function (req, res, next) {
                 if (!user) {
                     //req.flash('error', 'No account with that email address exists.');
                     console.log('No account with that email address exists: ' + req.body.username);
-                    return res.redirect('#forgotPassword');
+                    //return res.redirect(200, '#forgotPassword');
+                    return res.json({'msg': req.body.username + ' user account does not exist'})
                 }
 
                 user.resetPasswordToken = token;
@@ -302,16 +305,19 @@ apiRoutes.post('/forgot', function (req, res, next) {
             };
             smtpTransport.sendMail(mailOptions, function (err) {
                 //req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-                res.json({
-                    'msg': 'Message sent to your email'
-                });
                 done(err, 'done');
-
             });
+
+            /*
+            res.json({
+                'msg': 'Message sent to your email'
+            });
+            */
+
     }
   ], function (err) {
         if (err) return next(err);
-        res.redirect('#forgotPassword');
+        res.redirect('/#forgotPassword');
     });
 });
 
@@ -324,11 +330,13 @@ apiRoutes.get('/reset/:token', function (req, res) {
     }, function (err, user) {
         if (!user) {
             //req.flash('error', 'Password reset token is invalid or has expired.');
-            return res.redirect('#forgotPassword');
+            return res.redirect('/#forgotPassword');
         }
-        res.render('reset', {
-            user: req.user
-        });
+
+        res.redirect('/#resetPassword');
+        //res.render('reset', {
+          //  user: req.user
+        //});
     });
 });
 

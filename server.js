@@ -26,7 +26,7 @@ var async = require('async');
 var jwt = require('jwt-simple'); // used to create, sign, and verify tokens
 var fs = require('fs');
 var http = require('http');
-var path = require('path'); // A library to serve the index file
+var path = require('path'); // A library to serve the index and view files
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
 //var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
@@ -69,6 +69,10 @@ db.once('open', function () {
 });
 
 app.set('superSecret', config.secret); // Secret variable
+
+// set jade templating folder and specify the jade templating engine to reset passwords
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // use body parser so we can get info from POST and/or URL parameters
 app.use(bodyParser.urlencoded({
@@ -333,10 +337,10 @@ apiRoutes.get('/reset/:token', function (req, res) {
             return res.redirect('/#forgotPassword');
         }
 
-        res.redirect('/#resetPassword');
-        //res.render('reset', {
-          //  user: req.user
-        //});
+        //res.redirect('/#resetPassword');
+        res.render('reset', {
+            user: req.user
+        });
     });
 });
 

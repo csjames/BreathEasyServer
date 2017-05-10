@@ -6,10 +6,12 @@ Version 1.0
 
 ### Set Up ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
+* Clone the repository
+* Install nodejs
+* In the root directory run npm install
+* Start MongoDB (leave default port number)
+* In the root directory run node server.js
+* Go to localhost:8080 to access the running server
 * How to run tests
 * Deployment instructions
 

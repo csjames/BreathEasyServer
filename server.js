@@ -34,9 +34,11 @@ var crypto = require('crypto');
 
 // Data models and configuration files
 var config = require('./config/database');
-var User = require('./app/models/user'); // get our mongoose model
+// Get the mongoose models
+var User = require('./app/models/user');
 var DataEntry = require('./app/models/data');
 var UsageEntry = require('./app/models/usage');
+var Location = require('./app/models/location');
 var Intervention = require('./app/models/intervention');
 //var privateKey = fs.readFileSync('sslcert/key.pem', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
@@ -283,7 +285,7 @@ apiRoutes.post('/forgot', function (req, res, next) {
                 }
 
                 user.resetPasswordToken = token;
-                user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+                user.resetPasswordExpires = Date.now() + 3600000; // The reset password token is valid for 1 hour
 
                 user.save(function (err) {
                     done(err, token, user);
@@ -457,6 +459,42 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
+apiRoutes.post('/location', function (req, res){
+    if(!req.body.latitude || !req.body.longtitude){
+        res.json({
+            success: false,
+            msg: 'Please pass some location data.'
+        });
+    } else {
+        var token = getToken(req.headers);
+
+        if (token) {
+            var decoded = jwt.decode(token, config.secret);
+
+            var newLocation = new Location ({
+                user: decoded.username,
+                timestamp: req.body.appTimestamp,
+                latitude: req.body.latitude,
+                longtitude: req.body.longtitude
+            });
+
+            newLocation.save(function (err) {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        msg: 'Location data entry error.'
+                    });
+                }
+                res.json({
+                    success: true,
+                    msg: 'Succesfully stored new location entry.'
+                });
+            });
+        }
+    }
+
+});
+
 // Route to store user usage data (accessed at POST http://localhost:8080/api/usage)
 apiRoutes.post('/usage', function (req, res) {
     if (!req.body.activityID) {
@@ -487,7 +525,7 @@ apiRoutes.post('/usage', function (req, res) {
                     }
                     res.json({
                         success: true,
-                        msg: 'Successful stored new usage data entry.'
+                        msg: 'Successfully stored new usage data entry.'
                     });
                 });
             }
@@ -524,7 +562,7 @@ apiRoutes.post('/store', function (req, res) {
                     }
                     res.json({
                         success: true,
-                        msg: 'Successful stored new data entry.'
+                        msg: 'Successfully stored your response.'
                     });
                 });
             }
@@ -807,7 +845,7 @@ apiRoutes.post('/getintervention', function (req, res) {
 app.use('/api', apiRoutes);
 
 // =======================
-// start the http and https servers ======
+// start the http and https server ======
 // =======================
 var httpServer = http.createServer(app);
 //var httpsServer = https.createServer(credentials, app);

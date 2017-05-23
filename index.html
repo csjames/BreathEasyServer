@@ -286,6 +286,10 @@
                                 <p>Please click below to download user response data.</p>
                                 <button class="btn btn-primary" ng-click="smCtrl.getUserResponseData()">Download User Response</button>
                             </div>
+                            <div class="pull-left">
+                                <p>Please click below to download user location data.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserLocationData()">Download User Location</button>
+                            </div>
                         </div>
 
                         <div id="interventions" class="tab-pane fade in active">
@@ -511,6 +515,19 @@
                             hiddenElement.href = 'data:attachment/text,' + encodeURI(userResponseData);
                             hiddenElement.target = '_blank';
                             hiddenElement.download = 'userResponseData.txt';
+                            hiddenElement.click();
+                        });
+                    };
+
+                    vm.getUserLocationData = function() {
+                        $http.get(API_ENDPOINT.url + '/userLocationData').then(function(result) {
+                            var userLocationData = JSON.stringify(result.data);
+                            console.info(userLocationData);
+                            var hiddenElement = document.createElement('a');
+
+                            hiddenElement.href = 'data:attachment/text,' + encodeURI(userLocationData);
+                            hiddenElement.target = '_blank';
+                            hiddenElement.download = 'userLocationData.txt';
                             hiddenElement.click();
                         });
                     };

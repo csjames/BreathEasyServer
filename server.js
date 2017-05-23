@@ -115,7 +115,7 @@ function createAdmin() {
     // save the user
     newUser.save(function (err) {
         if (err) {
-            console.info("failed to create admin user");
+            console.info("failed to create admin user " + err);
         } else {
             console.info("admin created successfully");
         }
@@ -133,7 +133,7 @@ function createAuthor() {
     // save the user
     newUser.save(function (err) {
         if (err) {
-            console.info("failed to create author user");
+            console.info("failed to create author user " + err);
         } else {
             console.info("author created successfully");
         }
@@ -460,7 +460,8 @@ apiRoutes.use(function (req, res, next) {
 });
 
 apiRoutes.post('/location', function (req, res){
-    if(!req.body.latitude || !req.body.longtitude){
+    if(!req.body.latitude && !req.body.longtitude){
+        console.info(req.body);
         res.json({
             success: false,
             msg: 'Please pass some location data.'
@@ -711,6 +712,13 @@ apiRoutes.get('/userUsageData', function (req, res) {
 // route to return all stored data (GET http://localhost:8080/api/userResponseData)
 apiRoutes.get('/userResponseData', function (req, res) {
     DataEntry.find({}, function (err, data) {
+        res.json(data);
+    });
+});
+
+// route to return all stored data (GET http://localhost:8080/api/userResponseData)
+apiRoutes.get('/userLocationData', function (req, res) {
+    Location.find({}, function (err, data) {
         res.json(data);
     });
 });

@@ -53,6 +53,7 @@ var Intervention = require('./app/models/intervention');
 var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
 // https port
 //var httpsport = 8443;
+console.log(config.database);
 mongoose.connect(config.database); // connect to database
 
 /*
@@ -461,7 +462,6 @@ apiRoutes.use(function (req, res, next) {
 
 apiRoutes.post('/location', function (req, res){
     if(!req.body.latitude && !req.body.longtitude){
-        console.info(req.body);
         res.json({
             success: false,
             msg: 'Please pass some location data.'
@@ -702,6 +702,38 @@ apiRoutes.get('/interventions', function (req, res) {
     });
 });
 
+// Function to take out any unusable metadat from user response, usage, and location data
+function cleanUpData (inputData, model) {
+    var columnHeading;
+    var currentRow;
+    var outputData = [];
+
+    var column = {};
+    var modelAttribute = {};
+
+    console.info(inputData[0]);
+
+    for (column in inputData[0]){
+        columnHeading += column + ',';
+    }
+    console.info(columnHeading);
+
+    outputData.push(columnHeading);
+
+    var numberOfItems = inputData.length;
+
+    for (var i = 0; numberOfItems > i; i++) {
+        for (modelAttribute in model){
+            currentRow += inputData[i].modelAttribute + ',';
+        }
+        console.info(currentRow);
+
+        outputData.push(currentRow);
+    }
+
+    return outputData;
+}
+
 // route to return all users (GET http://localhost:8080/api/userUsageData)
 apiRoutes.get('/userUsageData', function (req, res) {
     UsageEntry.find({}, function (err, usage) {
@@ -719,7 +751,10 @@ apiRoutes.get('/userResponseData', function (req, res) {
 // route to return all stored data (GET http://localhost:8080/api/userResponseData)
 apiRoutes.get('/userLocationData', function (req, res) {
     Location.find({}, function (err, data) {
+        //var locModel = {"_id":"", "user":"", "timestamp":"", "latitude":"", "longtitude":""}
+        //var normalisedData = cleanUpData (data, locModel);
         res.json(data);
+        //res.json(normalisedData);
     });
 });
 

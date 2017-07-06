@@ -50,7 +50,7 @@ var Intervention = require('./app/models/intervention');
 // =======================
 // configuration =========
 // =======================
-var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
+var port = process.env.PORT || 8088; // used to create, sign, and verify tokens
 // https port
 //var httpsport = 8443;
 console.log(config.database);

@@ -436,8 +436,10 @@
             'use strict';
             angular.module('serverManagementModule', [])
                 //https://myhealthresearch.org/server/api
+                //http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api
+                //http://localhost:8080/api
                 .constant('API_ENDPOINT', {
-                    url: 'http://localhost:8080/api'
+                    url: 'http://re1e08-mongo-php.ecs.soton.ac.uk/frodo/api'
                 })
 
                 .controller('serverManagementCtrl', function(AuthService, dataManager, $http, $q, API_ENDPOINT) {

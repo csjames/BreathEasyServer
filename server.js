@@ -751,7 +751,7 @@ apiRoutes.get('/userResponseData', function (req, res) {
 
 // route to return all stored data (GET http://localhost:8080/api/userLocationData)
 apiRoutes.get('/userLocationData', function (req, res) {
-    Location.find({}, 'user timestamp longtitude latitude',function (err, data) {
+    Location.find({}, '-_id user timestamp latitude longtitude',function (err, data) {
         if (err){
             console.log(err);
         }

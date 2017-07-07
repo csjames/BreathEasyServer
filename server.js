@@ -460,6 +460,7 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
+// Route to store user usage data (accessed at POST http://localhost:8080/api/location)
 apiRoutes.post('/location', function (req, res){
     if(!req.body.latitude && !req.body.longtitude){
         res.json({
@@ -474,7 +475,7 @@ apiRoutes.post('/location', function (req, res){
 
             var newLocation = new Location ({
                 user: decoded.username,
-                timestamp: req.body.appTimestamp,
+                timestamp: req.body.timestamp,
                 latitude: req.body.latitude,
                 longtitude: req.body.longtitude
             });

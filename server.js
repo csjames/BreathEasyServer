@@ -737,14 +737,14 @@ function cleanUpData (inputData, model) {
 
 // route to return all users (GET http://localhost:8080/api/userUsageData)
 apiRoutes.get('/userUsageData', function (req, res) {
-    UsageEntry.find({}, function (err, usage) {
+    UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
         res.json(usage);
     });
 });
 
 // route to return all stored data (GET http://localhost:8080/api/userResponseData)
 apiRoutes.get('/userResponseData', function (req, res) {
-    DataEntry.find({}, function (err, data) {
+    DataEntry.find({}, '-_id user intervention key data',function (err, data) {
         res.json(data);
     });
 });

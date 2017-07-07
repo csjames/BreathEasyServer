@@ -749,9 +749,9 @@ apiRoutes.get('/userResponseData', function (req, res) {
     });
 });
 
-// route to return all stored data (GET http://localhost:8080/api/userResponseData)
+// route to return all stored data (GET http://localhost:8080/api/userLocationData)
 apiRoutes.get('/userLocationData', function (req, res) {
-    Location.find({}, function (err, data) {
+    Location.find({}, 'user timestamp longtitude latitude',function (err, data) {
         //var locModel = {"_id":"", "user":"", "timestamp":"", "latitude":"", "longtitude":""}
         //var normalisedData = cleanUpData (data, locModel);
         res.json(data);

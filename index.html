@@ -280,15 +280,27 @@
                             <h3>Data Management</h3>
                             <div class="pull-left">
                                 <p>Please click below to download user usage data.</p>
-                                <button class="btn btn-primary" ng-click="smCtrl.getUserUsageData()">Download User Usage</button>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserUsageData()">Download User Usage (DATA)</button>
                             </div>
                             <div class="pull-right">
+                                <p>Please click below to download user usage CSV.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserUsageCSV({filename: 'user-usage-data.csv', apiroute: '/userUsageCSV'})">Download User Usage (CSV)</button>
+                            </div>
+                            <div class="pull-left">
                                 <p>Please click below to download user response data.</p>
-                                <button class="btn btn-primary" ng-click="smCtrl.getUserResponseData()">Download User Response</button>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserResponseData()">Download User Response (DATA)</button>
+                            </div>
+                            <div class="pull-right">
+                                <p>Please click below to download user response CSV.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserResponseCSV()">Download User Response (CSV)</button>
                             </div>
                             <div class="pull-left">
                                 <p>Please click below to download user location data.</p>
-                                <button class="btn btn-primary" ng-click="smCtrl.getUserLocationData()">Download User Location</button>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserLocationData()">Download User Location (DATA)</button>
+                            </div>
+                            <div class="pull-right">
+                                <p>Please click below to download user location CSV.</p>
+                                <button class="btn btn-primary" ng-click="smCtrl.getUserLocationCSV()">Download User Location (CSV)</button>
                             </div>
                         </div>
 
@@ -504,6 +516,22 @@
                             hiddenElement.href = 'data:attachment/text,' + encodeURI(userUsageData);
                             hiddenElement.target = '_blank';
                             hiddenElement.download = 'userUsageData.txt';
+                            hiddenElement.click();
+                        });
+                    };
+
+                    vm.getUserUsageCSV = function(args) {
+                        $http.get(API_ENDPOINT.url + args.apiroute).then(function(result) {
+                            var filename;
+
+                            filename = args.filename || 'export.csv';
+                            console.info(result.data);
+
+                            var hiddenElement = document.createElement('a');
+
+                            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(result.data);
+                            hiddenElement.target = '_blank';
+                            hiddenElement.download = filename;
                             hiddenElement.click();
                         });
                     };

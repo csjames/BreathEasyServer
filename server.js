@@ -2,12 +2,10 @@
  *                                                                             *
  * Lifeguide Toolbox Server                                                    *
  *                                                                             *
- * Copyright (c) 2016                                                          *
+ * Copyright (c) 2016 - 2017                                                   *
  * University of Southampton                                                   *
  *     Author: Petros Papadopoulos                                             *
  *     e-mail: p.papadopoulos@soton.ac.uk                                      *
- *     Created: 11/1/2016                                                      *
- *     Last Modified: xx/x/2016                                                *
  * All rights reserverd                                                        *
  *                                                                             *
  **************************************************************************** */
@@ -704,41 +702,74 @@ apiRoutes.get('/interventions', function (req, res) {
 });
 
 // Function to take out any unusable metadat from user response, usage, and location data
-function cleanUpData (inputData, model) {
-    var columnHeading;
-    var currentRow;
+function exportData (inputData, column) {
     var outputData = [];
+    var outputFile = new File();
+    var numOfEntries = inputData.length;
+    var header = "", currentRow = "";
 
-    var column = {};
-    var modelAttribute = {};
-
-    console.info(inputData[0]);
-
-    for (column in inputData[0]){
-        columnHeading += column + ',';
+    // Feel in the fisrt row with the column headers
+    for (var colProp in column) {
+        header += colProp + ", ";
     }
-    console.info(columnHeading);
+    outputData.push(header);
+    file.writeln(header);
 
-    outputData.push(columnHeading);
-
-    var numberOfItems = inputData.length;
-
-    for (var i = 0; numberOfItems > i; i++) {
-        for (modelAttribute in model){
-            currentRow += inputData[i].modelAttribute + ',';
+    for (var i=0; i<numOfEntries; i++){
+        for (var prop in column){
+            currentRow += inputData[i].prop + ", "
         }
-        console.info(currentRow);
-
         outputData.push(currentRow);
+        file.writeln(currentRow);
+    }
+    return outputData;
+}
+
+// Function that makes the convertion from mongoDB to CSV file
+function convertArrayOfObjectsToCSV(args) {
+    var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+    data = args.data || null;
+    if (data == null || !data.length) {
+        return null;
     }
 
-    return outputData;
+    columnDelimiter = args.columnDelimiter || ',';
+    lineDelimiter = args.lineDelimiter || '\n';
+
+    keys = Object.keys(data[0]);
+
+    result = '';
+    result += keys.join(columnDelimiter);
+    result += lineDelimiter;
+
+    data.forEach(function(item) {
+        ctr = 0;
+        keys.forEach(function(key) {
+            if (ctr > 0) result += columnDelimiter;
+
+            result += item[key];
+            ctr++;
+        });
+        result += lineDelimiter;
+    });
+
+    return result;
 }
 
 // route to return all users (GET http://localhost:8080/api/userUsageData)
 apiRoutes.get('/userUsageData', function (req, res) {
     UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
         res.json(usage);
+    });
+});
+
+apiRoutes.get('/userUsageCSV', function (req, res) {
+    UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
+        var csv = convertArrayOfObjectsToCSV({data: usage});
+        res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+        res.set('Content-Type', 'text/csv');
+        res.status(200).send(csv);
     });
 });
 

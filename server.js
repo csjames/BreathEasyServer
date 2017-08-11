@@ -701,31 +701,8 @@ apiRoutes.get('/interventions', function (req, res) {
     });
 });
 
-// Function to take out any unusable metadat from user response, usage, and location data
-function exportData (inputData, column) {
-    var outputData = [];
-    var outputFile = new File();
-    var numOfEntries = inputData.length;
-    var header = "", currentRow = "";
-
-    // Feel in the fisrt row with the column headers
-    for (var colProp in column) {
-        header += colProp + ", ";
-    }
-    outputData.push(header);
-    file.writeln(header);
-
-    for (var i=0; i<numOfEntries; i++){
-        for (var prop in column){
-            currentRow += inputData[i].prop + ", "
-        }
-        outputData.push(currentRow);
-        file.writeln(currentRow);
-    }
-    return outputData;
-}
-
 // Function that makes the convertion from mongoDB to CSV file
+// Currently this convertion happens in the client but left the function in case there is a need for the convertion to happen at server-side
 function convertArrayOfObjectsToCSV(args) {
     var result, ctr, keys, columnDelimiter, lineDelimiter, data;
 
@@ -763,12 +740,13 @@ apiRoutes.get('/userUsageData', function (req, res) {
     });
 });
 
+// route to return a csv with user usage (GET http://localhost:8080/api/userUsageCSV)
 apiRoutes.get('/userUsageCSV', function (req, res) {
     UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
         var csv = convertArrayOfObjectsToCSV({data: usage});
         res.setHeader('Content-disposition', 'attachment; filename=data.csv');
         res.set('Content-Type', 'text/csv');
-        res.status(200).send(usage);
+        res.status(200).send(csv);
     });
 });
 

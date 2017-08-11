@@ -771,7 +771,10 @@ apiRoutes.get('/userUsageData', function (req, res) {
 
 apiRoutes.get('/userUsageCSV', function (req, res) {
     UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
-        var csv = convertArrayOfObjectsToCSV({data: usage});
+        var parsedData = JSON.parse(usage);
+        console.info(usage);
+        console.info(parsedData);
+        var csv = convertArrayOfObjectsToCSV({data: parsedData});
         res.setHeader('Content-disposition', 'attachment; filename=data.csv');
         res.set('Content-Type', 'text/csv');
         res.status(200).send(csv);

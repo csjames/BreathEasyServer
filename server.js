@@ -739,6 +739,9 @@ function convertArrayOfObjectsToCSV(args) {
 
     keys = Object.keys(data[0]);
 
+    console.info(data[0]);
+    console.info(keys);
+
     result = '';
     result += keys.join(columnDelimiter);
     result += lineDelimiter;
@@ -749,6 +752,8 @@ function convertArrayOfObjectsToCSV(args) {
             if (ctr > 0) result += columnDelimiter;
 
             result += item[key];
+            console.info(result);
+            console.info(ctr);
             ctr++;
         });
         result += lineDelimiter;

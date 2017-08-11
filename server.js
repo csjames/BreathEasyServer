@@ -739,6 +739,7 @@ function convertArrayOfObjectsToCSV(args) {
 
     keys = Object.keys(data[0]);
 
+    console.info("first line of data array and the keys of that first line")
     console.info(data[0]);
     console.info(keys);
 
@@ -771,10 +772,11 @@ apiRoutes.get('/userUsageData', function (req, res) {
 
 apiRoutes.get('/userUsageCSV', function (req, res) {
     UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
-        var parsedData = JSON.parse(usage);
+        //var parsedData = JSON.parse(usage);
+        console.info("The usage data return from mongo");
         console.info(usage);
-        console.info(parsedData);
-        var csv = convertArrayOfObjectsToCSV({data: parsedData});
+
+        var csv = convertArrayOfObjectsToCSV({data: usage});
         res.setHeader('Content-disposition', 'attachment; filename=data.csv');
         res.set('Content-Type', 'text/csv');
         res.status(200).send(csv);

@@ -527,7 +527,7 @@
                             filename = args.filename || 'export.csv';
                             console.info(result.data);
 
-                            csv = ConvertionService.convertArrayOfObjectsToCSV(result.data);
+                            csv = ConvertionService.convertArrayOfObjectsToCSV({data: result.data});
 
                             var hiddenElement = document.createElement('a');
 

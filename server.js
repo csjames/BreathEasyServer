@@ -739,10 +739,6 @@ function convertArrayOfObjectsToCSV(args) {
 
     keys = Object.keys(data[0]);
 
-    console.info("first line of data array and the keys of that first line")
-    console.info(data[0]);
-    console.info(keys);
-
     result = '';
     result += keys.join(columnDelimiter);
     result += lineDelimiter;
@@ -751,10 +747,7 @@ function convertArrayOfObjectsToCSV(args) {
         ctr = 0;
         keys.forEach(function(key) {
             if (ctr > 0) result += columnDelimiter;
-
             result += item[key];
-            console.info(result);
-            console.info(ctr);
             ctr++;
         });
         result += lineDelimiter;
@@ -772,14 +765,10 @@ apiRoutes.get('/userUsageData', function (req, res) {
 
 apiRoutes.get('/userUsageCSV', function (req, res) {
     UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
-        //var parsedData = JSON.parse(usage);
-        console.info("The usage data return from mongo");
-        console.info(usage);
-
         var csv = convertArrayOfObjectsToCSV({data: usage});
         res.setHeader('Content-disposition', 'attachment; filename=data.csv');
         res.set('Content-Type', 'text/csv');
-        res.status(200).send(csv);
+        res.status(200).send(usage);
     });
 });
 

@@ -280,7 +280,9 @@ apiRoutes.post('/forgot', function (req, res, next) {
                     //req.flash('error', 'No account with that email address exists.');
                     console.log('No account with that email address exists: ' + req.body.username);
                     //return res.redirect(200, '#forgotPassword');
-                    return res.json({'msg': req.body.username + ' user account does not exist'})
+                    return res.json({
+                        'msg': req.body.username + ' user account does not exist'
+                    })
                 }
 
                 user.resetPasswordToken = token;
@@ -459,8 +461,8 @@ apiRoutes.use(function (req, res, next) {
 });
 
 // Route to store user usage data (accessed at POST http://localhost:8080/api/location)
-apiRoutes.post('/location', function (req, res){
-    if(!req.body.latitude && !req.body.longtitude){
+apiRoutes.post('/location', function (req, res) {
+    if (!req.body.latitude && !req.body.longtitude) {
         res.json({
             success: false,
             msg: 'Please pass some location data.'
@@ -471,7 +473,7 @@ apiRoutes.post('/location', function (req, res){
         if (token) {
             var decoded = jwt.decode(token, config.secret);
 
-            var newLocation = new Location ({
+            var newLocation = new Location({
                 user: decoded.username,
                 timestamp: req.body.timestamp,
                 latitude: req.body.latitude,
@@ -720,9 +722,9 @@ function convertArrayOfObjectsToCSV(args) {
     result += keys.join(columnDelimiter);
     result += lineDelimiter;
 
-    data.forEach(function(item) {
+    data.forEach(function (item) {
         ctr = 0;
-        keys.forEach(function(key) {
+        keys.forEach(function (key) {
             if (ctr > 0) result += columnDelimiter;
             result += item[key];
             ctr++;
@@ -735,15 +737,23 @@ function convertArrayOfObjectsToCSV(args) {
 
 // route to return all users (GET http://localhost:8080/api/userUsageData)
 apiRoutes.get('/userUsageData', function (req, res) {
-    UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
+    UsageEntry.find({}, '-_id user activityID timestamp', function (err, usage) {
+        if (err) {
+            res.json(err);
+        }
         res.json(usage);
     });
 });
 
 // route to return a csv with user usage (GET http://localhost:8080/api/userUsageCSV)
 apiRoutes.get('/userUsageCSV', function (req, res) {
-    UsageEntry.find({}, '-_id user activityID timestamp',function (err, usage) {
-        var csv = convertArrayOfObjectsToCSV({data: usage});
+    UsageEntry.find({}, '-_id user activityID timestamp', function (err, usage) {
+        if (err) {
+            res.json(err);
+        }
+        var csv = convertArrayOfObjectsToCSV({
+            data: usage
+        });
         res.setHeader('Content-disposition', 'attachment; filename=data.csv');
         res.set('Content-Type', 'text/csv');
         res.status(200).send(csv);
@@ -752,16 +762,19 @@ apiRoutes.get('/userUsageCSV', function (req, res) {
 
 // route to return all stored data (GET http://localhost:8080/api/userResponseData)
 apiRoutes.get('/userResponseData', function (req, res) {
-    DataEntry.find({}, '-_id user intervention key data',function (err, data) {
+    DataEntry.find({}, '-_id user intervention key data', function (err, data) {
+        if (err) {
+            res.json(err);
+        }
         res.json(data);
     });
 });
 
 // route to return all stored data (GET http://localhost:8080/api/userLocationData)
 apiRoutes.get('/userLocationData', function (req, res) {
-    Location.find({}, '-_id user timestamp latitude longtitude',function (err, data) {
-        if (err){
-            console.log(err);
+    Location.find({}, '-_id user timestamp latitude longtitude', function (err, data) {
+        if (err) {
+            res.json(err);
         }
         res.json(data);
     });

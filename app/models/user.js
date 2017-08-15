@@ -39,6 +39,7 @@ var UserSchema = new Schema({
     },
     interventionID: String,
     email: String,
+    organisation: String,
     tel: Number,
     location: String,
     meta: {

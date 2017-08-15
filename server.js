@@ -235,6 +235,7 @@ apiRoutes.post('/signup', function (req, res) {
                 author: req.body.role.author
             },
             email: req.body.email,
+            organisation: req.body.organisation,
             tel: req.body.tel,
             location: req.body.location
         });

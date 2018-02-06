@@ -48,7 +48,7 @@ var Intervention = require('./app/models/intervention');
 // =======================
 // configuration =========
 // =======================
-var port = process.env.PORT || 8088; // used to create, sign, and verify tokens
+var port = 8088; // used to create, sign, and verify tokens
 // https port
 //var httpsport = 8443;
 console.log(config.database);
@@ -217,6 +217,8 @@ apiRoutes.post('/authenticate', function (req, res) {
 
 // Route to create a new user account (POST http://localhost:8080/api/signup)
 apiRoutes.post('/signup', function (req, res) {
+    console.log("Handling signup")
+
     if (!req.body.username || !req.body.password) {
         res.json({
             success: false,
@@ -242,6 +244,7 @@ apiRoutes.post('/signup', function (req, res) {
         // save the user
         newUser.save(function (err) {
             if (err) {
+                console.log("Saving")
                 return res.json({
                     success: false,
                     msg: 'Username already exists.'
@@ -398,6 +401,73 @@ apiRoutes.post('/reset/:token', function (req, res) {
     });
 });
 
+// Route to store user usage data (accessed at POST http://localhost:8080/api/location)
+apiRoutes.post('/location/:token?*', function (req, res) {
+    var token = getToken(req.headers);
+
+    if (!token) {
+        token = getToken(req.body.user) || req.params.token;
+    }
+
+    if (!token) {
+        console.log("no token")
+        return
+    }
+
+    var decoded = jwt.decode(token, config.secret);
+
+    if (Array.isArray(req.body)) {
+        for (var i = 0; i < req.body.length; i++) {
+            var location = req.body[i];
+            var newLocation = new Location({
+                user: decoded.username,
+                timestamp: location.time,
+                latitude: location.latitude,
+                longitude: location.longitude
+            });
+
+            newLocation.save(function (err) {
+                if (err) {
+                    console.log("location data entry error")
+
+                    return res.json({
+                        success: false,
+                        msg: 'Location data entry error.'
+                    });
+                }
+            });
+
+            res.json({
+                success: true,
+                msg: 'Succesfully stored new location entry.'
+            });
+        }    
+    } else {
+        var newLocation = new Location({
+            user: decoded.username,
+            timestamp: req.body.timestamp,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
+        });
+
+        newLocation.save(function (err) {
+            if (err) {
+                console.log("location data entry error")
+
+                return res.json({
+                    success: false,
+                    msg: 'Location data entry error.'
+                });
+            }
+            res.json({
+                success: true,
+                msg: 'Succesfully stored new location entry.'
+            });
+        });
+    }
+
+});
+
 
 // Middleware route to verify a token that will not allow access access to following (routes declared after the middleware route)
 // routes unless a user token is authenticated, please note that the order of the routes
@@ -408,6 +478,10 @@ apiRoutes.use(function (req, res, next) {
     //var token = req.body.token || req.query.token || req.headers['authorization'];
     var token = getToken(req.headers);
 
+    if (!token) {
+        token = getToken(req.body.user);
+    }
+    
     // decode token
     if (token) {
         var decoded = jwt.decode(token, config.secret);
@@ -461,42 +535,6 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
-// Route to store user usage data (accessed at POST http://localhost:8080/api/location)
-apiRoutes.post('/location', function (req, res) {
-    if (!req.body.latitude && !req.body.longtitude) {
-        res.json({
-            success: false,
-            msg: 'Please pass some location data.'
-        });
-    } else {
-        var token = getToken(req.headers);
-
-        if (token) {
-            var decoded = jwt.decode(token, config.secret);
-
-            var newLocation = new Location({
-                user: decoded.username,
-                timestamp: req.body.timestamp,
-                latitude: req.body.latitude,
-                longtitude: req.body.longtitude
-            });
-
-            newLocation.save(function (err) {
-                if (err) {
-                    return res.json({
-                        success: false,
-                        msg: 'Location data entry error.'
-                    });
-                }
-                res.json({
-                    success: true,
-                    msg: 'Succesfully stored new location entry.'
-                });
-            });
-        }
-    }
-
-});
 
 // Route to store user usage data (accessed at POST http://localhost:8080/api/usage)
 apiRoutes.post('/usage', function (req, res) {
@@ -907,16 +945,44 @@ apiRoutes.post('/getintervention', function (req, res) {
     }
 });
 
+// CORS middleware
+var allowCrossDomain = function(req, res, next) {
+    // res.header('Accept', 'application/json');
+    // console.log("CD");
+
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With');
+
+    next();
+}
+
+app.use(allowCrossDomain);
+
+app.use('*',(req,res,next) =>{
+
+  if (req.method == "OPTIONS") {
+    res.status(200);
+    res.send();
+  }else{
+    next();
+  }
+});
+
+
 // Apply the routes to our application with the prefix /api
 app.use('/api', apiRoutes);
+
 
 // =======================
 // start the http and https server ======
 // =======================
+
+
 var httpServer = http.createServer(app);
 //var httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(port);
+httpServer.listen(port, "0.0.0.0");
 //httpsServer.listen(httpsport);
 
 console.log('The http server is running at http://localhost:' + port);
